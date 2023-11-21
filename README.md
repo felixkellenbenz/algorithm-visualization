@@ -1,2 +1,2 @@
 # algorithm-visualization
-This will be a application to visualize diffrent path finding algorithms.
+This will be an application to visualize diffrent path finding algorithms.
