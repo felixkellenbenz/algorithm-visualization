@@ -1,3 +1,0 @@
-/home/felixkellenbenz/Documents/Programming/C++/algorithm-visualization/build/CMakeFiles/algo.dir
-/home/felixkellenbenz/Documents/Programming/C++/algorithm-visualization/build/CMakeFiles/edit_cache.dir
-/home/felixkellenbenz/Documents/Programming/C++/algorithm-visualization/build/CMakeFiles/rebuild_cache.dir
