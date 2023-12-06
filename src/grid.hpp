@@ -1,13 +1,14 @@
+#pragma once
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
-#include <bits/types/cookie_io_functions_t.h>
+#include <array>
 #include <cstdint>
-#include <memory>
+#include <iterator>
+#include <optional>
 #include <unordered_map>
 #include <vector>
-
 
 typedef struct Color 
 {
@@ -40,26 +41,38 @@ class Node
 {
 private:
   SDL_Rect const rect;
-  std::vector<Node> neighbours;
+  bool free;
   Color color;
+  std::array<Node*, 8> neighbourhood;
+  uint64_t distance;
 
 public:
   Node(SDL_Rect const& rect) 
-      : rect(rect), neighbours() {}
+    : rect(rect), free(true),
+    neighbourhood(),
+    color({202, 202, 202, SDL_ALPHA_OPAQUE}),
+    distance(UINT64_MAX) {}
 
-  bool is_free();
-  SDL_Rect get_rect();
-  std::vector<Node> get_neighbours();
-};
+  Node(SDL_Rect const& rect, Color const& color, bool free)
+    : rect(rect), free(free),
+    neighbourhood(),
+    color(color),  distance(UINT64_MAX) {}
 
-/*A special class representing a Obstacle Node*/
-class ObstacleNode : public Node
-{
-private:
-  Color color;
+  Node(SDL_Rect const& rect, Color const& color,
+       std::array<Node*, 8> const& neighbours, bool free)
+    : rect(rect), free(free),
+    neighbourhood(neighbours),
+    color(color),  distance(UINT64_MAX) {} 
 
-public:
-  ObstacleNode(SDL_Rect const& rect) : Node(rect) {}
+  Node(Node const& node) :
+      rect(node.rect), free(node.free),
+      neighbourhood(node.neighbourhood), color(node.color),
+      distance(node.distance) {}
+
+  ~Node();
+
+  void render(SDL_Renderer *renderer);
+  std::array<Node*, 8> neighbours();
   bool is_free();
 };
 
@@ -69,12 +82,17 @@ class Grid
 {
 private:
   std::unordered_map<Coordinate, Node> rects;
+  std::optional<Node> start;
 
 public:
-  Grid() : rects() {}
+
+  Grid() : rects(), start() {}
   ~Grid();
-  Grid(const Grid&);
-  Node& find_node(int32_t x, int32_t y);
+  Grid(const Grid& grid) : rects(grid.rects), start(grid.start) {}
+
+  void render(SDL_Renderer *renderer);
+  std::optional<Node> find_node(Coordinate cord);
+  void set_start(Node node); 
 };
 
 /*Build a grid with only free rects*/
@@ -84,14 +102,13 @@ private:
   uint32_t grid_w;
   uint32_t grid_h;
   uint8_t border;
-  Color grid_color;
   Grid grid;
 
 public:
   GridBuilder(uint32_t width, uint32_t height,
               uint8_t border, Color const& color) 
     : grid_w(width), grid_h(height),
-      border(border), grid_color(color) {}
+      border(border) {}
 
   void build_grid(); 
   Grid export_grid();
@@ -105,17 +122,3 @@ class GridEditor
 
 
 };
-
-/*Visitor style grid renderer*/
-class GridRenderer
-{
-private:
-    SDL_Renderer *renderer;
-
-public:
-  GridRenderer(SDL_Renderer* renderer) : renderer(renderer) {}
-  void render(ObstacleNode);
-  void render(Node);
-};
-
-
