@@ -24,12 +24,13 @@ typedef struct Coordinate
   int32_t y;
   Coordinate() : x(0), y(0) {}
   Coordinate(Coordinate const& cord): x(cord.x), y(cord.y) {}
+  bool operator==(Coordinate const&) const;
 } Coordinate;
 
 template<>
 struct std::hash<Coordinate>
 {
-  std::size_t operator()(Coordinate const& coord)
+  std::size_t operator()(Coordinate const& coord) const
   {
     std::hash<int32_t> hash;
     return hash(coord.x) ^ (hash(coord.y) << 1);
@@ -99,15 +100,19 @@ public:
 class GridBuilder
 {
 private:
-  uint32_t grid_w;
-  uint32_t grid_h;
+  uint32_t grid_width;
+  uint32_t grid_height;
+  uint32_t node_width;
+  uint32_t node_height;
   uint8_t border;
   Grid grid;
 
 public:
-  GridBuilder(uint32_t width, uint32_t height,
-              uint8_t border, Color const& color) 
-    : grid_w(width), grid_h(height),
+  GridBuilder(uint32_t grid_width, uint32_t grid_height,
+              uint8_t border, Color const& color,
+              uint32_t node_width, uint32_t node_height) 
+    : grid_width(grid_width), grid_height(grid_height),
+      node_width(node_width), node_height(node_height),
       border(border) {}
 
   void build_grid(); 

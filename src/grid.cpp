@@ -1,3 +1,4 @@
+#include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
 #include <array>
 #include <cstdint>
@@ -6,6 +7,13 @@
 
 #include "grid.hpp"
 
+
+bool Coordinate::operator==(Coordinate const& cord) const
+{
+  return cord.x == x && cord.y == y;
+}
+
+Node::~Node() {}
 
 void Node::render(SDL_Renderer *renderer)
 {
@@ -26,11 +34,15 @@ std::array<Node*, 8> Node::neighbours()
 
 void Grid::render(SDL_Renderer *renderer)
 {
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+  SDL_RenderClear(renderer);
   for (auto& it : rects)
   {
     it.second.render(renderer);
   }
 }
+
+Grid::~Grid() {}
 
 std::optional<Node> Grid::find_node(Coordinate cord)
 {
@@ -48,6 +60,7 @@ void Grid::set_start(Node node)
 
 void GridBuilder::build_grid()
 {
+  
 
 
 }
@@ -55,7 +68,6 @@ void GridBuilder::build_grid()
 
 Grid GridBuilder::export_grid()
 {
-
-
+  return Grid();
 }
 
