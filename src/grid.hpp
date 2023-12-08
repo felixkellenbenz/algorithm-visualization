@@ -22,7 +22,7 @@ typedef struct Coordinate
 {
   int32_t x;
   int32_t y;
-  Coordinate() : x(0), y(0) {}
+  Coordinate(uint32_t x = 0, uint32_t y = 0) : x(x), y(y){}
   Coordinate(Coordinate const& cord): x(cord.x), y(cord.y) {}
   bool operator==(Coordinate const&) const;
 } Coordinate;
@@ -74,6 +74,7 @@ public:
 
   void render(SDL_Renderer *renderer);
   std::array<Node*, 8> neighbours();
+  Coordinate coordinate();
   bool is_free();
 };
 
@@ -91,9 +92,10 @@ public:
   ~Grid();
   Grid(const Grid& grid) : rects(grid.rects), start(grid.start) {}
 
-  void render(SDL_Renderer *renderer);
-  std::optional<Node> find_node(Coordinate cord);
-  void set_start(Node node); 
+  void render(SDL_Renderer*);
+  std::optional<Node> find_node(Coordinate);
+  void add_node(Node);
+  void set_start(Node); 
 };
 
 /*Build a grid with only free rects*/
@@ -102,18 +104,16 @@ class GridBuilder
 private:
   uint32_t grid_width;
   uint32_t grid_height;
-  uint32_t node_width;
-  uint32_t node_height;
+  uint32_t node_size;
   uint8_t border;
   Grid grid;
 
 public:
   GridBuilder(uint32_t grid_width, uint32_t grid_height,
               uint8_t border, Color const& color,
-              uint32_t node_width, uint32_t node_height) 
+              uint32_t node_size) 
     : grid_width(grid_width), grid_height(grid_height),
-      node_width(node_width), node_height(node_height),
-      border(border) {}
+      node_size(node_size), border(border) {}
 
   void build_grid(); 
   Grid export_grid();

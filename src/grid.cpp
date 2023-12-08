@@ -42,6 +42,11 @@ void Grid::render(SDL_Renderer *renderer)
   }
 }
 
+Coordinate Node::coordinate()
+{
+
+}
+
 Grid::~Grid() {}
 
 std::optional<Node> Grid::find_node(Coordinate cord)
@@ -53,6 +58,11 @@ std::optional<Node> Grid::find_node(Coordinate cord)
     return {}; 
 }
 
+void Grid::add_node(Node node)
+{
+
+}
+
 void Grid::set_start(Node node)
 {
   start.emplace(node);
@@ -60,6 +70,10 @@ void Grid::set_start(Node node)
 
 void GridBuilder::build_grid()
 {
+   
+  uint32_t next_x, next_y;
+  uint32_t actual_size = node_size - 2 * border;
+
   
 
 
