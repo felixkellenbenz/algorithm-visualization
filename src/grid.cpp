@@ -115,7 +115,19 @@ void GridRenderer::render()
 
     SDL_RenderFillRect(renderer, &next_rect);
     SDL_RenderDrawRect(renderer, &next_rect);
-  } 
+  }
 
 }
 
+GridEditor::~GridEditor() {}
+
+void GridEditor::make_obstacle(Coordinate cord)
+{
+
+}
+
+
+void GridEditor::make_start(Coordinate cord)
+{
+
+}

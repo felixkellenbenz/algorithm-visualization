@@ -4,6 +4,7 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
 #include <array>
+#include <cstdint>
 #include <optional>
 #include <unordered_map>
 #include <vector>
@@ -113,9 +114,18 @@ public:
 /*Class for modeling a Grid Editor*/
 class GridEditor
 {
-  
+private:
+  Grid& grid;
+  uint32_t node_size;
 
-
+public:
+  GridEditor(Grid& grid, uint32_t node_size) 
+    : grid(grid) ,node_size(node_size) {}
+  GridEditor(GridEditor const& grid_editor) 
+    : grid(grid_editor.grid), node_size(grid_editor.node_size) {}
+  ~GridEditor();
+  void make_obstacle(Coordinate);
+  void make_start(Coordinate);
 };
 
 /*A class for rendering the Grid*/
