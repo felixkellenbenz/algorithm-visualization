@@ -4,8 +4,6 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
 #include <array>
-#include <cstdint>
-#include <iterator>
 #include <optional>
 #include <unordered_map>
 #include <vector>
@@ -44,38 +42,30 @@ private:
   SDL_Rect const rect;
   bool free;
   Color color;
-  std::array<Node*, 8> neighbourhood;
   uint64_t distance;
 
 public:
   Node(SDL_Rect const& rect) 
     : rect(rect), free(true),
-    neighbourhood(),
     color({202, 202, 202, SDL_ALPHA_OPAQUE}),
     distance(UINT64_MAX) {}
 
   Node(SDL_Rect const& rect, Color const& color, bool free)
     : rect(rect), free(free),
-    neighbourhood(),
-    color(color),  distance(UINT64_MAX) {}
-
-  Node(SDL_Rect const& rect, Color const& color,
-       std::array<Node*, 8> const& neighbours, bool free)
-    : rect(rect), free(free),
-    neighbourhood(neighbours),
     color(color),  distance(UINT64_MAX) {} 
 
   Node(Node const& node) :
       rect(node.rect), free(node.free),
-      neighbourhood(node.neighbourhood), color(node.color),
+      color(node.color),
       distance(node.distance) {}
 
   ~Node();
 
-  void render(SDL_Renderer *renderer);
-  std::array<Node*, 8> neighbours();
-  Coordinate coordinate();
-  bool is_free();
+  bool is_free() const;
+  SDL_Rect get_rect() const;
+  Color get_color() const;
+  void set_free(bool);
+  void set_color(Color);
 };
 
 /* Class representing the Grid on
@@ -92,9 +82,9 @@ public:
   ~Grid();
   Grid(const Grid& grid) : rects(grid.rects), start(grid.start) {}
 
-  void render(SDL_Renderer*);
-  std::optional<Node> find_node(Coordinate);
+  std::optional<Node> find_node(Coordinate) const;
   void add_node(Node);
+  std::unordered_map<Coordinate, Node> const& get_nodes() const;
   void set_start(Node); 
 };
 
@@ -113,7 +103,7 @@ public:
               uint8_t border, Color const& color,
               uint32_t node_size) 
     : grid_width(grid_width), grid_height(grid_height),
-      node_size(node_size), border(border) {}
+    node_size(node_size), border(border) {}
 
   void build_grid(); 
   Grid export_grid();
@@ -123,7 +113,20 @@ public:
 /*Class for modeling a Grid Editor*/
 class GridEditor
 {
+  
 
 
+};
 
+/*A class for rendering the Grid*/
+class GridRenderer
+{
+private:
+  SDL_Renderer *renderer;
+  std::unordered_map<Coordinate, Node> const& nodes;
+
+public:
+  GridRenderer(SDL_Renderer *ren, std::unordered_map<Coordinate, Node> const& nodes)
+    : renderer(ren), nodes(nodes) {}
+  void render_node(Node const&);
 };
