@@ -15,41 +15,41 @@ bool Coordinate::operator==(Coordinate const& cord) const
 
 Node::~Node() {}
 
-void Node::render(SDL_Renderer *renderer)
+Coordinate Node::coordinates() const
 {
-  SDL_SetRenderDrawColor(renderer, color.red, color.green
-                           ,color.blue, color.alpha);
-  SDL_RenderFillRect(renderer, &rect);
+  uint32_t x = rect.x;
+  uint32_t y = rect.y;
+  return {x, y};
 }
 
-bool Node::is_free()
+bool Node::is_free() const
 {
   return free;
 }
 
-std::array<Node*, 8> Node::neighbours()
+SDL_Rect Node::get_rect() const
 {
-  return neighbourhood; 
+  return rect;
 }
 
-void Grid::render(SDL_Renderer *renderer)
+Color Node::get_color() const
 {
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
-  SDL_RenderClear(renderer);
-  for (auto& it : rects)
-  {
-    it.second.render(renderer);
-  }
+  return color;
 }
 
-Coordinate Node::coordinate()
+void Node::set_free(bool new_val)
 {
+  free = new_val;
+}
 
+void Node::set_color(Color new_color)
+{
+  color = new_color;
 }
 
 Grid::~Grid() {}
 
-std::optional<Node> Grid::find_node(Coordinate cord)
+std::optional<Node> Grid::find_node(Coordinate cord) const
 {
   auto iter = rects.find(cord);
   if (iter != rects.end())
@@ -60,7 +60,13 @@ std::optional<Node> Grid::find_node(Coordinate cord)
 
 void Grid::add_node(Node node)
 {
+  Coordinate cords = node.coordinates();
+  rects.insert({cords, node});
+}
 
+std::unordered_map<Coordinate, Node> const& Grid::get_nodes() const
+{
+  return rects;
 }
 
 void Grid::set_start(Node node)
@@ -69,19 +75,47 @@ void Grid::set_start(Node node)
 }
 
 void GridBuilder::build_grid()
-{
-   
-  uint32_t next_x, next_y;
-  uint32_t actual_size = node_size - 2 * border;
+{ 
+  int next_x = border, next_y = border;
+  int actual_size = node_size - 2 * border;
 
-  
-
-
+  while (next_x <= grid_width)
+  {
+    Node node({next_x, next_y, actual_size, actual_size});
+    grid.add_node(node);
+    next_x += node_size;
+    if (next_x >= grid_width
+      && next_y <= grid_height)
+    {
+      next_x = border;
+      next_y += node_size;
+    }
+  }
 }
 
 
 Grid GridBuilder::export_grid()
 {
-  return Grid();
+  return grid;
+}
+
+void GridRenderer::render()
+{
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderClear(renderer);
+
+  auto nodes = grid.get_nodes();
+  for (auto const& it : nodes)
+  {
+    auto next_rect = it.second.get_rect();
+    auto next_color = it.second.get_color();
+
+    SDL_SetRenderDrawColor(renderer, next_color.red, next_color.green, 
+                           next_color.blue, next_color.alpha);
+
+    SDL_RenderFillRect(renderer, &next_rect);
+    SDL_RenderDrawRect(renderer, &next_rect);
+  } 
+
 }
 

@@ -61,6 +61,7 @@ public:
 
   ~Node();
 
+  Coordinate coordinates() const;
   bool is_free() const;
   SDL_Rect get_rect() const;
   Color get_color() const;
@@ -99,11 +100,10 @@ private:
   Grid grid;
 
 public:
-  GridBuilder(uint32_t grid_width, uint32_t grid_height,
-              uint8_t border, Color const& color,
-              uint32_t node_size) 
+  GridBuilder(uint32_t const grid_width, uint32_t const grid_height,
+              uint8_t const border, uint32_t const node_size) 
     : grid_width(grid_width), grid_height(grid_height),
-    node_size(node_size), border(border) {}
+    node_size(node_size), border(border), grid() {}
 
   void build_grid(); 
   Grid export_grid();
@@ -123,10 +123,10 @@ class GridRenderer
 {
 private:
   SDL_Renderer *renderer;
-  std::unordered_map<Coordinate, Node> const& nodes;
+  Grid const& grid;
 
 public:
-  GridRenderer(SDL_Renderer *ren, std::unordered_map<Coordinate, Node> const& nodes)
-    : renderer(ren), nodes(nodes) {}
-  void render_node(Node const&);
+  GridRenderer(SDL_Renderer *ren,Grid const& grid)
+    : renderer(ren), grid(grid) {}
+  void render();
 };

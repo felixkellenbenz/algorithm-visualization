@@ -1,3 +1,4 @@
+#include <SDL2/SDL_events.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
@@ -9,13 +10,20 @@
 
 uint32_t const WIDTH = 620;
 uint32_t const HEIGTH = 480;
+uint8_t const BORDER = 1;
+uint32_t const NODE_SIZE = 20;
+bool running = true;
 
 
 int main (int argc, char *argv[])
 {
-  Grid grid;
+  GridBuilder builder(WIDTH, HEIGTH, BORDER, NODE_SIZE);
+  builder.build_grid();
+  auto grid = builder.export_grid();
+
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SDL_Event ev;
 
   if (SDL_Init(SDL_INIT_EVERYTHING))
   {
@@ -23,17 +31,25 @@ int main (int argc, char *argv[])
   }
 
   SDL_CreateWindowAndRenderer(WIDTH, HEIGTH, 0, &window, &renderer);
+  GridRenderer grid_renderer(renderer, grid); 
 
   if (!window || !renderer)
   {
     std::cout << "Error: Could not create window and renderer\n";
   }
 
-  grid.render(renderer);
+  while (running)
+  {
+    while (SDL_PollEvent(&ev))
+    {
+      if (ev.type == SDL_QUIT)
+        running = false;
+    }
 
-  SDL_RenderPresent(renderer);
+    grid_renderer.render(); 
 
-  SDL_Delay(2000);
+    SDL_RenderPresent(renderer); 
+  }
 
   SDL_DestroyWindow(window);
   SDL_DestroyRenderer(renderer);
