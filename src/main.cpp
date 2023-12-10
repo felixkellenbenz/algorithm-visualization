@@ -1,4 +1,5 @@
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
@@ -13,13 +14,16 @@ uint32_t const HEIGTH = 480;
 uint8_t const BORDER = 1;
 uint32_t const NODE_SIZE = 20;
 bool running = true;
+int mouse_x, mouse_y;
 
 
 int main (int argc, char *argv[])
 {
+
   GridBuilder builder(WIDTH, HEIGTH, BORDER, NODE_SIZE);
   builder.build_grid();
   auto grid = builder.export_grid();
+  GridEditor editor(grid, NODE_SIZE, BORDER);
 
   SDL_Window *window;
   SDL_Renderer *renderer;
@@ -44,6 +48,11 @@ int main (int argc, char *argv[])
     {
       if (ev.type == SDL_QUIT)
         running = false;
+      if (ev.type == SDL_MOUSEBUTTONDOWN)
+      {
+        SDL_GetMouseState(&mouse_x, &mouse_y);
+        editor.make_obstacle(mouse_x, mouse_y);
+      }
     }
 
     grid_renderer.render(); 

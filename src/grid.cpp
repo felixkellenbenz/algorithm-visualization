@@ -1,7 +1,5 @@
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
-#include <array>
-#include <cstdint>
 #include <SDL2/SDL.h>
 #include <optional>
 
@@ -14,6 +12,13 @@ bool Coordinate::operator==(Coordinate const& cord) const
 }
 
 Node::~Node() {}
+
+Node& Node::operator=(Node node)
+{
+  free = node.free;
+  color = node.color;
+  return *this;
+}
 
 Coordinate Node::coordinates() const
 {
@@ -61,7 +66,14 @@ std::optional<Node> Grid::find_node(Coordinate cord) const
 void Grid::add_node(Node node)
 {
   Coordinate cords = node.coordinates();
-  rects.insert({cords, node});
+  auto found = rects.find(cords);
+  if (found == rects.end())
+  {
+    rects.insert({cords, node});
+  } else {
+    found->second = node;
+  }
+
 }
 
 std::unordered_map<Coordinate, Node> const& Grid::get_nodes() const
@@ -121,13 +133,42 @@ void GridRenderer::render()
 
 GridEditor::~GridEditor() {}
 
-void GridEditor::make_obstacle(Coordinate cord)
+Coordinate GridEditor::parse_coordinate(uint32_t x, uint32_t y)
+{
+  uint32_t cord_x = x - (x % node_size) + border;
+  uint32_t cord_y = y - (y % node_size) + border;
+  return {cord_x, cord_y};
+}
+
+void GridEditor::update_node(Color color, bool free, std::optional<Node> node)
+{
+  if (!node.has_value()) return;
+
+  node->set_free(free);
+  node->set_color(color);
+  grid.add_node(node.value()); 
+}
+
+
+void GridEditor::reset_grid()
 {
 
 }
 
-
-void GridEditor::make_start(Coordinate cord)
+void GridEditor::make_obstacle(uint32_t x, uint32_t y)
 {
+  Color obstacle_color = {0, 123, 184};
+  auto cord = parse_coordinate(x, y);
+  auto node = grid.find_node(cord);
+  update_node(obstacle_color, false, node);
+}
 
+
+void GridEditor::make_start(uint32_t x, uint32_t y)
+{
+  // make so that a grid can only have one start
+  Color start_color = {255, 0, 0};
+  auto cord = parse_coordinate(x, y);
+  auto node = grid.find_node(cord);
+  update_node(start_color, false, node); 
 }

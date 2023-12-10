@@ -3,11 +3,8 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
-#include <array>
-#include <cstdint>
 #include <optional>
 #include <unordered_map>
-#include <vector>
 
 typedef struct Color 
 {
@@ -61,7 +58,7 @@ public:
       distance(node.distance) {}
 
   ~Node();
-
+  Node& operator=(Node node);
   Coordinate coordinates() const;
   bool is_free() const;
   SDL_Rect get_rect() const;
@@ -117,15 +114,19 @@ class GridEditor
 private:
   Grid& grid;
   uint32_t node_size;
+  uint8_t border;
+  Coordinate parse_coordinate(uint32_t, uint32_t);
+  void update_node(Color, bool, std::optional<Node>);
 
 public:
-  GridEditor(Grid& grid, uint32_t node_size) 
-    : grid(grid) ,node_size(node_size) {}
+  GridEditor(Grid& grid, uint32_t node_size, uint8_t border) 
+    : grid(grid), node_size(node_size), border(border){}
   GridEditor(GridEditor const& grid_editor) 
-    : grid(grid_editor.grid), node_size(grid_editor.node_size) {}
+    : grid(grid_editor.grid) {}
   ~GridEditor();
-  void make_obstacle(Coordinate);
-  void make_start(Coordinate);
+  void reset_grid();
+  void make_obstacle(uint32_t x, uint32_t y);
+  void make_start(uint32_t x, uint32_t y);
 };
 
 /*A class for rendering the Grid*/
