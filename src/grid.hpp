@@ -99,7 +99,7 @@ public:
   uint32_t get_heigth() const;
   uint32_t get_width() const;
   std::optional<Node> get_start() const;
-  void set_start(Node); 
+  void set_start(std::optional<Node>); 
 };
 
 /*Build a grid with only free rects*/
@@ -127,6 +127,10 @@ public:
 class GridEditor
 {
 private:
+  static Color const START;
+  static Color const OBST;
+  static Color const BASIC;
+  static Color const END;
   Grid& grid;
   uint32_t node_size;
   uint8_t border;

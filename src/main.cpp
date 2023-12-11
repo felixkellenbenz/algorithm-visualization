@@ -47,6 +47,8 @@ int main (int argc, char *argv[])
 
   while (running)
   {
+    // this should be in the event handler class 
+    // like this it is horrible
     while (SDL_PollEvent(&ev))
     {
       if (ev.type == SDL_QUIT)
@@ -54,7 +56,18 @@ int main (int argc, char *argv[])
       if (ev.type == SDL_MOUSEBUTTONDOWN)
       {
         SDL_GetMouseState(&mouse_x, &mouse_y);
-        editor.make_obstacle(mouse_x, mouse_y);
+        if (ev.button.button == SDL_BUTTON_LEFT)
+        { 
+          editor.make_obstacle(mouse_x, mouse_y);
+        }
+        else if (ev.button.button == SDL_BUTTON_RIGHT)
+        { 
+          editor.make_start(mouse_x, mouse_y);
+        }
+      }
+      if (ev.type == SDL_MOUSEMOTION && ev.button.button == SDL_BUTTON(SDL_BUTTON_LEFT))
+      {
+        editor.make_obstacle(ev.motion.x, ev.motion.y);
       }
 
       if (ev.type == SDL_KEYDOWN)

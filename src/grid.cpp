@@ -2,10 +2,15 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
 #include <cstdint>
+#include <memory>
 #include <optional>
 
 #include "grid.hpp"
 
+Color const GridEditor::BASIC = {202, 202, 202};
+Color const GridEditor::START = {255, 0, 0};
+Color const GridEditor::END = {0, 0, 0};
+Color const GridEditor::OBST = {0, 123, 184};
 
 bool Coordinate::operator==(Coordinate const& cord) const
 {
@@ -97,9 +102,12 @@ uint32_t Grid::get_heigth() const
   return heigth;
 }
 
-void Grid::set_start(Node node)
+void Grid::set_start(std::optional<Node> node)
 {
-  start.emplace(node);
+  if (node.has_value())
+    start.emplace(node.value());
+  else
+    start = node;
 }
 
 void GridBuilder::build_grid()
@@ -122,7 +130,6 @@ void GridBuilder::build_grid()
     }
   }
 }
-
 
 Grid GridBuilder::export_grid()
 {
@@ -170,8 +177,8 @@ Coordinate GridEditor::parse_coordinate(uint32_t x, uint32_t y)
 
 void GridEditor::update_node(Color color, bool free, std::optional<Node> node)
 {
-  if (!node.has_value()) return;
-
+  if (!node.has_value()) return; 
+  
   node->set_free(free);
   node->set_color(color);
   grid.add_node(node.value()); 
@@ -184,9 +191,10 @@ void GridEditor::reset_grid()
 
   for (auto const& node : nodes)
   {
-    update_node({202, 202, 202}, true, node.second);
+    update_node(BASIC, true, node.second);
   }
 
+  grid.set_start({});
 }
 
 void GridEditor::make_obstacle(uint32_t x, uint32_t y)
@@ -194,15 +202,30 @@ void GridEditor::make_obstacle(uint32_t x, uint32_t y)
   Color obstacle_color = {0, 123, 184};
   auto cord = parse_coordinate(x, y);
   auto node = grid.find_node(cord);
+
+  if (!node.has_value() || !node.value().is_free()) return;
+
   update_node(obstacle_color, false, node);
 }
 
-
 void GridEditor::make_start(uint32_t x, uint32_t y)
 {
-  // make so that a grid can only have one start
-  Color start_color = {255, 0, 0};
   auto cord = parse_coordinate(x, y);
   auto node = grid.find_node(cord);
-  update_node(start_color, false, node); 
+
+  if (!node.has_value() || !node->is_free()) return;
+
+  node->set_color(START);
+  node->set_free(false);
+
+  if (grid.get_start().has_value())
+  {
+    auto start = grid.get_start().value();
+    start.set_free(true);
+    start.set_color(BASIC);
+    grid.add_node(start);
+  }
+
+  grid.add_node(node.value());
+  grid.set_start(node); 
 }
