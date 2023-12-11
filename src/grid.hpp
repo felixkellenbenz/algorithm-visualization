@@ -94,7 +94,7 @@ public:
   ~Grid();
   Grid(const Grid& grid) : rects(grid.rects), start(grid.start) {}
 
-  std::optional<Node> find_node(Coordinate) const;
+  std::optional<Node> find_node(Coordinate const&) const;
   void add_node(Node);
   std::unordered_map<Coordinate, Node> const& get_nodes() const;
   uint32_t get_heigth() const;
@@ -139,7 +139,7 @@ private:
   uint32_t node_size;
   uint8_t border;
   Coordinate parse_coordinate(uint32_t, uint32_t);
-  void update_node(Color, bool, std::optional<Node>);
+  void update_node(Color const&, bool, std::optional<Node>);
 
 public:
   GridEditor(Grid& grid, uint32_t node_size, uint8_t border) 

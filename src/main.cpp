@@ -10,6 +10,7 @@
 #include <type_traits>
 
 #include "grid.hpp"
+#include "utils.hpp"
 
 uint32_t const WIDTH = 720;
 uint32_t const HEIGTH = 540;
@@ -28,7 +29,7 @@ int main (int argc, char *argv[])
 
   SDL_Window *window;
   SDL_Renderer *renderer;
-  SDL_Event ev;
+  SDL_Event event;
 
   if (SDL_Init(SDL_INIT_EVERYTHING))
   {
@@ -40,6 +41,7 @@ int main (int argc, char *argv[])
   SDL_CreateWindowAndRenderer(WIDTH - BORDER, HEIGTH - BORDER, 
                               0, &window, &renderer);
   GridRenderer grid_renderer(renderer, grid); 
+  EventHandler event_handler(editor, running);
 
   if (!window || !renderer)
   {
@@ -48,37 +50,7 @@ int main (int argc, char *argv[])
 
   while (running)
   {
-    // this should be in the event handler class 
-    // like this it is horrible
-    while (SDL_PollEvent(&ev))
-    {
-      if (ev.type == SDL_QUIT)
-        running = false;
-      if (ev.type == SDL_MOUSEBUTTONDOWN)
-      {
-        SDL_GetMouseState(&mouse_x, &mouse_y);
-        if (ev.button.button == SDL_BUTTON_LEFT)
-          editor.make_obstacle(mouse_x, mouse_y);
-        else if (ev.button.button == SDL_BUTTON_RIGHT)
-          editor.make_start(mouse_x, mouse_y);
-      }
-      if (ev.type == SDL_MOUSEMOTION && ev.button.button == SDL_BUTTON(SDL_BUTTON_LEFT))
-      {
-        editor.make_obstacle(ev.motion.x, ev.motion.y);
-      }
-
-      if (ev.type == SDL_KEYDOWN)
-      {
-        if (ev.key.keysym.sym == 114)
-          editor.reset_grid();
-        if (ev.key.keysym.sym == 101)
-        {
-          SDL_GetMouseState(&mouse_x, &mouse_y);
-          editor.make_end(mouse_x, mouse_y);
-        }
-      }
-    }
-
+    event_handler.handle_events(event); 
     grid_renderer.render(); 
 
     SDL_RenderPresent(renderer); 

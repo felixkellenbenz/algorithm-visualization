@@ -8,14 +8,16 @@ include_directories(${SDL2_INCLUDE_DIRS})
 add_executable(
             algo
             src/main.cpp
-            src/grid.cpp)
+            src/grid.cpp
+            src/utils.cpp)
 
                     
 set_target_properties(algo PROPERTIES CXX_STANDARD 17)
 
 add_library(
        algo_lib
-       src/grid.hpp)
+       src/grid.hpp
+       src/utils.hpp)
 
 set_target_properties(algo_lib PROPERTIES LINKER_LANGUAGE CXX)
 

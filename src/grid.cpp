@@ -62,7 +62,7 @@ void Node::set_color(Color new_color)
 
 Grid::~Grid() {}
 
-std::optional<Node> Grid::find_node(Coordinate cord) const
+std::optional<Node> Grid::find_node(Coordinate const& cord) const
 {
   auto iter = rects.find(cord);
   if (iter != rects.end())
@@ -190,7 +190,7 @@ Coordinate GridEditor::parse_coordinate(uint32_t x, uint32_t y)
   return {cord_x, cord_y};
 }
 
-void GridEditor::update_node(Color color, bool free, std::optional<Node> node)
+void GridEditor::update_node(Color const& color, bool free, std::optional<Node> node)
 { 
   if (!node.has_value()) return;
 
