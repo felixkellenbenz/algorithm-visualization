@@ -1,6 +1,7 @@
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
+#include <cstdint>
 #include <optional>
 
 #include "grid.hpp"
@@ -81,6 +82,21 @@ std::unordered_map<Coordinate, Node> const& Grid::get_nodes() const
   return rects;
 }
 
+std::optional<Node> Grid::get_start() const
+{
+  return start;
+}
+
+uint32_t Grid::get_width() const
+{
+  return width;
+}
+
+uint32_t Grid::get_heigth() const
+{
+  return heigth;
+}
+
 void Grid::set_start(Node node)
 {
   start.emplace(node);
@@ -113,6 +129,18 @@ Grid GridBuilder::export_grid()
   return grid;
 }
 
+void GridRenderer::render_node(Node const& node)
+{
+  auto next_rect = node.get_rect();
+  auto next_color = node.get_color();
+
+  SDL_SetRenderDrawColor(renderer, next_color.red, next_color.green, 
+                           next_color.blue, next_color.alpha);
+
+  SDL_RenderFillRect(renderer, &next_rect);
+  SDL_RenderDrawRect(renderer, &next_rect); 
+}
+
 void GridRenderer::render()
 {
   SDL_SetRenderDrawColor(renderer, background.red, 
@@ -123,15 +151,11 @@ void GridRenderer::render()
   auto nodes = grid.get_nodes();
   for (auto const& it : nodes)
   {
-    auto next_rect = it.second.get_rect();
-    auto next_color = it.second.get_color();
+    render_node(it.second);
+  } 
 
-    SDL_SetRenderDrawColor(renderer, next_color.red, next_color.green, 
-                           next_color.blue, next_color.alpha);
-
-    SDL_RenderFillRect(renderer, &next_rect);
-    SDL_RenderDrawRect(renderer, &next_rect);
-  }
+  if (grid.get_start().has_value())
+    render_node(grid.get_start().value()); 
 
 }
 
@@ -156,6 +180,12 @@ void GridEditor::update_node(Color color, bool free, std::optional<Node> node)
 
 void GridEditor::reset_grid()
 {
+  auto nodes = grid.get_nodes();
+
+  for (auto const& node : nodes)
+  {
+    update_node({202, 202, 202}, true, node.second);
+  }
 
 }
 

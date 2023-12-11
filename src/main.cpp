@@ -1,10 +1,12 @@
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keyboard.h>
 #include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <type_traits>
 
 #include "grid.hpp"
 
@@ -53,6 +55,14 @@ int main (int argc, char *argv[])
       {
         SDL_GetMouseState(&mouse_x, &mouse_y);
         editor.make_obstacle(mouse_x, mouse_y);
+      }
+
+      if (ev.type == SDL_KEYDOWN)
+      {
+        if (ev.key.keysym.sym == 114)
+        {
+          editor.reset_grid();
+        }
       }
     }
 

@@ -81,18 +81,24 @@ public:
 class Grid
 {
 private:
+  uint32_t width;
+  uint32_t heigth;
   std::unordered_map<Coordinate, Node> rects;
   std::optional<Node> start;
 
 public:
 
-  Grid() : rects(), start() {}
+  Grid(uint32_t width, uint32_t heigth) 
+    : rects(), start(), width(width), heigth(heigth) {}
   ~Grid();
   Grid(const Grid& grid) : rects(grid.rects), start(grid.start) {}
 
   std::optional<Node> find_node(Coordinate) const;
   void add_node(Node);
   std::unordered_map<Coordinate, Node> const& get_nodes() const;
+  uint32_t get_heigth() const;
+  uint32_t get_width() const;
+  std::optional<Node> get_start() const;
   void set_start(Node); 
 };
 
@@ -110,7 +116,7 @@ public:
   GridBuilder(uint32_t const grid_width, uint32_t const grid_height,
               uint8_t const border, uint32_t const node_size) 
     : grid_width(grid_width), grid_height(grid_height),
-    node_size(node_size), border(border), grid() {}
+    node_size(node_size), border(border), grid(grid_width, grid_height) {}
 
   void build_grid(); 
   Grid export_grid();
@@ -145,6 +151,7 @@ private:
   SDL_Renderer *renderer;
   Color const background = {0, 0, 0} ;
   Grid const& grid;
+  void render_node(Node const& node);
 
 public:
   GridRenderer(SDL_Renderer *ren,Grid const& grid)
