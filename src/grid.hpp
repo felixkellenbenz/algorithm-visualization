@@ -57,8 +57,8 @@ public:
     color({202, 202, 202}),
     distance(UINT64_MAX) {}
 
-  Node(SDL_Rect const& rect, Color const& color, bool free)
-    : rect(rect), free(free),
+  Node(SDL_Rect const& rect, Color const& color)
+    : rect(rect), free(true),
     color(color),  distance(UINT64_MAX) {} 
 
   Node(Node const& node) :
@@ -85,6 +85,7 @@ private:
   uint32_t heigth;
   std::unordered_map<Coordinate, Node> rects;
   std::optional<Node> start;
+  std::optional<Node> end;
 
 public:
 
@@ -99,13 +100,16 @@ public:
   uint32_t get_heigth() const;
   uint32_t get_width() const;
   std::optional<Node> get_start() const;
+  std::optional<Node> get_end() const;
   void set_start(std::optional<Node>); 
+  void set_end(std::optional<Node>);
 };
 
 /*Build a grid with only free rects*/
 class GridBuilder
 {
 private:
+  static Color const NODE_COLOR;
   uint32_t grid_width;
   uint32_t grid_height;
   uint32_t node_size;
@@ -146,14 +150,15 @@ public:
   void reset_grid();
   void make_obstacle(uint32_t x, uint32_t y);
   void make_start(uint32_t x, uint32_t y);
+  void make_end(uint32_t x, uint32_t y);
 };
 
 /*A class for rendering the Grid*/
 class GridRenderer
 {
 private:
+  static Color const BACKGROUND;
   SDL_Renderer *renderer;
-  Color const background = {0, 0, 0} ;
   Grid const& grid;
   void render_node(Node const& node);
 

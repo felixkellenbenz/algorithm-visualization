@@ -7,10 +7,12 @@
 
 #include "grid.hpp"
 
-Color const GridEditor::BASIC = {202, 202, 202};
-Color const GridEditor::START = {255, 0, 0};
-Color const GridEditor::END = {0, 0, 0};
-Color const GridEditor::OBST = {0, 123, 184};
+Color const GridEditor::BASIC = {229, 229, 229};
+Color const GridEditor::START = {51, 184, 100};
+Color const GridEditor::END = {197, 30, 58};
+Color const GridEditor::OBST = {36, 36, 36};
+Color const GridRenderer::BACKGROUND = {36, 36, 36};
+Color const GridBuilder::NODE_COLOR = {220, 220, 220};
 
 bool Coordinate::operator==(Coordinate const& cord) const
 {
@@ -102,12 +104,25 @@ uint32_t Grid::get_heigth() const
   return heigth;
 }
 
+std::optional<Node> Grid::get_end() const
+{
+  return end;
+}
+
 void Grid::set_start(std::optional<Node> node)
 {
   if (node.has_value())
     start.emplace(node.value());
   else
     start = node;
+}
+
+void Grid::set_end(std::optional<Node> node)
+{
+  if (node.has_value())
+    end.emplace(node.value());
+  else
+    end = node;
 }
 
 void GridBuilder::build_grid()
@@ -118,7 +133,7 @@ void GridBuilder::build_grid()
 
   while (next_x <= grid_width)
   {
-    Node node({next_x, next_y, actual_size, actual_size});
+    Node node({next_x, next_y, actual_size, actual_size}, NODE_COLOR);
     grid.add_node(node);
     next_x += node_size;
 
@@ -150,9 +165,9 @@ void GridRenderer::render_node(Node const& node)
 
 void GridRenderer::render()
 {
-  SDL_SetRenderDrawColor(renderer, background.red, 
-                         background.green, background.blue,
-                         background.alpha);
+  SDL_SetRenderDrawColor(renderer, BACKGROUND.red, 
+                         BACKGROUND.green, BACKGROUND.blue,
+                         BACKGROUND.alpha);
   SDL_RenderClear(renderer);
 
   auto nodes = grid.get_nodes();
@@ -176,9 +191,9 @@ Coordinate GridEditor::parse_coordinate(uint32_t x, uint32_t y)
 }
 
 void GridEditor::update_node(Color color, bool free, std::optional<Node> node)
-{
-  if (!node.has_value()) return; 
-  
+{ 
+  if (!node.has_value()) return;
+
   node->set_free(free);
   node->set_color(color);
   grid.add_node(node.value()); 
@@ -199,13 +214,12 @@ void GridEditor::reset_grid()
 
 void GridEditor::make_obstacle(uint32_t x, uint32_t y)
 {
-  Color obstacle_color = {0, 123, 184};
   auto cord = parse_coordinate(x, y);
   auto node = grid.find_node(cord);
 
   if (!node.has_value() || !node.value().is_free()) return;
 
-  update_node(obstacle_color, false, node);
+  update_node(OBST, false, node);
 }
 
 void GridEditor::make_start(uint32_t x, uint32_t y)
@@ -220,12 +234,28 @@ void GridEditor::make_start(uint32_t x, uint32_t y)
 
   if (grid.get_start().has_value())
   {
-    auto start = grid.get_start().value();
-    start.set_free(true);
-    start.set_color(BASIC);
-    grid.add_node(start);
+    update_node(BASIC, true, grid.get_start());
   }
 
   grid.add_node(node.value());
   grid.set_start(node); 
+}
+
+void GridEditor::make_end(uint32_t x, uint32_t y)
+{
+  auto cord = parse_coordinate(x, y);
+  auto node = grid.find_node(cord);
+
+  if (!node.has_value() || !node->is_free()) return;
+
+  node->set_color(END);
+  node->set_free(false);
+
+  if (grid.get_end().has_value())
+  {
+    update_node(BASIC, true, grid.get_end());
+  }
+
+  grid.add_node(node.value());
+  grid.set_end(node); 
 }
