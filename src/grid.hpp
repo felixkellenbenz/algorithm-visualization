@@ -3,6 +3,7 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
+#include <cstdint>
 #include <optional>
 #include <unordered_map>
 
@@ -12,6 +13,14 @@ typedef struct Color
   uint8_t green;
   uint8_t blue;
   uint8_t alpha;
+  Color(uint8_t red, uint8_t green, uint8_t blue)
+  : red(red), green(green), blue(blue), 
+    alpha(SDL_ALPHA_OPAQUE) {}
+
+  Color(uint8_t red, uint8_t green,
+        uint8_t blue, uint8_t alpha)
+  : red(red), green(green), blue(blue),
+    alpha(alpha) {} 
 } Color;
 
 typedef struct Coordinate
@@ -45,7 +54,7 @@ private:
 public:
   Node(SDL_Rect const& rect) 
     : rect(rect), free(true),
-    color({202, 202, 202, SDL_ALPHA_OPAQUE}),
+    color({202, 202, 202}),
     distance(UINT64_MAX) {}
 
   Node(SDL_Rect const& rect, Color const& color, bool free)
@@ -134,6 +143,7 @@ class GridRenderer
 {
 private:
   SDL_Renderer *renderer;
+  Color const background = {0, 0, 0} ;
   Grid const& grid;
 
 public:

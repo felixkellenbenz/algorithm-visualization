@@ -3,14 +3,13 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
-#include <cstdint>
 #include <iostream>
 #include <SDL2/SDL.h>
 
 #include "grid.hpp"
 
-uint32_t const WIDTH = 620;
-uint32_t const HEIGTH = 480;
+uint32_t const WIDTH = 720;
+uint32_t const HEIGTH = 540;
 uint8_t const BORDER = 1;
 uint32_t const NODE_SIZE = 20;
 bool running = true;
@@ -19,8 +18,7 @@ int mouse_x, mouse_y;
 
 int main (int argc, char *argv[])
 {
-
-  GridBuilder builder(WIDTH, HEIGTH, BORDER, NODE_SIZE);
+  GridBuilder builder(WIDTH - BORDER, HEIGTH - BORDER, BORDER, NODE_SIZE);
   builder.build_grid();
   auto grid = builder.export_grid();
   GridEditor editor(grid, NODE_SIZE, BORDER);
@@ -34,7 +32,10 @@ int main (int argc, char *argv[])
     std::cout << "Error: Could not init sdl\n";
   }
 
-  SDL_CreateWindowAndRenderer(WIDTH, HEIGTH, 0, &window, &renderer);
+  // we have to decrement the width and heigth by border because of 
+  // the way we render nodes 
+  SDL_CreateWindowAndRenderer(WIDTH - BORDER, HEIGTH - BORDER, 
+                              0, &window, &renderer);
   GridRenderer grid_renderer(renderer, grid); 
 
   if (!window || !renderer)

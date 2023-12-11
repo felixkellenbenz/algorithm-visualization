@@ -87,19 +87,21 @@ void Grid::set_start(Node node)
 }
 
 void GridBuilder::build_grid()
-{ 
-  int next_x = border, next_y = border;
-  int actual_size = node_size - 2 * border;
+{
+  // coordinates of the top-left most node is (0,0)
+  int next_x = 0, next_y = 0;
+  int actual_size = node_size - border;
 
   while (next_x <= grid_width)
   {
     Node node({next_x, next_y, actual_size, actual_size});
     grid.add_node(node);
     next_x += node_size;
+
     if (next_x >= grid_width
-      && next_y <= grid_height)
+        && next_y <= grid_height)
     {
-      next_x = border;
+      next_x = 0;
       next_y += node_size;
     }
   }
@@ -113,7 +115,9 @@ Grid GridBuilder::export_grid()
 
 void GridRenderer::render()
 {
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_SetRenderDrawColor(renderer, background.red, 
+                         background.green, background.blue,
+                         background.alpha);
   SDL_RenderClear(renderer);
 
   auto nodes = grid.get_nodes();
@@ -135,8 +139,8 @@ GridEditor::~GridEditor() {}
 
 Coordinate GridEditor::parse_coordinate(uint32_t x, uint32_t y)
 {
-  uint32_t cord_x = x - (x % node_size) + border;
-  uint32_t cord_y = y - (y % node_size) + border;
+  uint32_t cord_x = x - (x % node_size);
+  uint32_t cord_y = y - (y % node_size);
   return {cord_x, cord_y};
 }
 
