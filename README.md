@@ -1,34 +1,37 @@
 # algorithm-visualization
 This is an application to visualize and explore path finding algorithms on
-a 2D grid. This application was built to get more familiar with SDL2 and 
+a 2D grid. It was built to get more familiar with SDL2 and 
 learn more about C++.
 
-# Implemented Algorithms
+## Implemented Algorithms
 The application is able to execute the following path finding
 algorithms on a 2D grid:
-    - Dijkstra
-    - A*
-    - BFS
+1. Dijkstra
+2. BFS
+3. A*
 
-# Development environment
+## Development environment
 
-## Software
+### Software
     - Linux Ubuntu 23.10
     - CMake 3.27.4 
     - g++ 13.2.0 
 
-## Hardware
+### Hardware
     - Microsoft Laptop Studio
     - 11th Gen Intel Core i7
 
-# Guide
+## Guide
 This is a quick guid on how to edit the 2D grid, select start 
 and end node, select an algorithms and execute the algorithm.
 
-## Edit the grid
+### Edit the grid
+To edit the grid you have to enter edit mode you can do so by
+pressing the **i - key** Once in edit mode you have the following options.
+- **left mousebutton**: draw obstacles.
+- **e - key**: create the end node at the location of the cursor.
+- **s - key**: create the start node at the location of the cursor.
+- **r - key**: reset the grid.
 
-Press i to enter edit mode
-In edit mode presse e to make the end node at location of the cursor.
-In edit mode press s to declare a starting point at the location of the cursor.
-In edit mode click or drag the mouse with left mouse button to draw obstacles.
+### Selct algorithms
 
