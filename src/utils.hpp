@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
+#include <functional>
 
 #include "grid.hpp"
 
@@ -13,6 +14,7 @@ private:
   bool& running;
   bool edit_flag;
   
+  // this could be cleaner with the c++ way of function pointers
   void consider_edit_flag(SDL_Event&, void(EventHandler::*)(SDL_Event&),
                           void(EventHandler::*)(SDL_Event&));
   void on_mousebutton(SDL_Event&);
