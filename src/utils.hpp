@@ -11,7 +11,6 @@ class EventHandler
 {
 private:
   GridEditor& editor;
-  Grid& grid;
   int mouse_x, mouse_y;
   bool& running;
   bool edit_flag;
@@ -28,9 +27,8 @@ private:
   void on_mousemotion(SDL_Event&);
 
 public:
-  EventHandler(GridEditor& editor, bool& running,
-               Grid& grid, bool& algo_running)
-    : editor(editor), mouse_x(0), mouse_y(0), grid(grid),
+  EventHandler(GridEditor& editor, bool& running) 
+    : editor(editor), mouse_x(0), mouse_y(0),
       edit_flag(0), running(running) {}
   void handle_events(SDL_Event&);
 };

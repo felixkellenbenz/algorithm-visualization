@@ -28,8 +28,7 @@ int main (int argc, char *argv[])
   builder.build_grid();
   auto grid = builder.export_grid();
   GridEditor editor(grid, NODE_SIZE, BORDER);
-  NullAlgorithm null_algo(grid);
-  Algorithm* to_execute = &null_algo;
+
 
   SDL_Window *window;
   SDL_Renderer *renderer;
@@ -45,7 +44,7 @@ int main (int argc, char *argv[])
   SDL_CreateWindowAndRenderer(WIDTH - BORDER, HEIGTH - BORDER, 
                               0, &window, &renderer);
   GridRenderer grid_renderer(renderer, grid); 
-  EventHandler event_handler(editor, running, algo_running, grid);
+  EventHandler event_handler(editor, running);
 
   if (!window || !renderer)
   {
@@ -54,10 +53,7 @@ int main (int argc, char *argv[])
 
   while (running)
   {
-    event_handler.handle_events(event);
-
-    if (algo_running)
-      to_execute->run(editor);
+    event_handler.handle_events(event); 
 
     grid_renderer.render();
 
