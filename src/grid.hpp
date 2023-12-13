@@ -7,6 +7,7 @@
 #include <optional>
 #include <unordered_map>
 
+
 typedef struct Color 
 {
   uint8_t red;
@@ -22,6 +23,12 @@ typedef struct Color
   : red(red), green(green), blue(blue),
     alpha(alpha) {} 
 } Color;
+
+
+Color const OBSTACLE = {36, 36, 36};
+Color const PATH = {0 ,0, 0};
+Color const EXPLORE = {255, 0, 0};
+
 
 typedef struct Coordinate
 {
@@ -50,6 +57,7 @@ private:
   bool free;
   Color color;
   uint64_t distance;
+  std::optional<Node const*> parent;
 
 public:
   Node(SDL_Rect const& rect) 
@@ -68,12 +76,15 @@ public:
 
   ~Node();
   Node& operator=(Node node);
+  bool operator==(Node const&) const;
   Coordinate coordinates() const;
   bool is_free() const;
   SDL_Rect get_rect() const;
   Color get_color() const;
+  std::optional<Node const*> get_parent() const;
   void set_free(bool);
   void set_color(Color);
+  void set_parent(Node const*);
 };
 
 /* Class representing the Grid on
@@ -95,6 +106,7 @@ public:
   Grid(const Grid& grid) : rects(grid.rects), start(grid.start) {}
 
   std::optional<Node> find_node(Coordinate const&) const;
+  std::optional<Node const*> find_node(Node const&) const;
   void add_node(Node);
   std::unordered_map<Coordinate, Node> const& get_nodes() const;
   uint32_t get_heigth() const;
@@ -121,7 +133,6 @@ public:
               uint8_t const border, uint32_t const node_size) 
     : grid_width(grid_width), grid_height(grid_height),
     node_size(node_size), border(border), grid(grid_width, grid_height) {}
-
   void build_grid(); 
   Grid export_grid();
 
@@ -132,14 +143,13 @@ class GridEditor
 {
 private:
   static Color const START;
-  static Color const OBST;
   static Color const BASIC;
   static Color const END;
   Grid& grid;
   uint32_t node_size;
   uint8_t border;
   Coordinate parse_coordinate(uint32_t, uint32_t);
-  void update_node(Color const&, bool, std::optional<Node>);
+  void update_grid(Color const&, bool, std::optional<Node>);
 
 public:
   GridEditor(Grid& grid, uint32_t node_size, uint8_t border) 
@@ -148,9 +158,10 @@ public:
     : grid(grid_editor.grid) {}
   ~GridEditor();
   void reset_grid();
-  void make_obstacle(uint32_t x, uint32_t y);
-  void make_start(uint32_t x, uint32_t y);
-  void make_end(uint32_t x, uint32_t y);
+  void color_node(uint32_t x, uint32_t y, Color const& color);
+  void color_node(Node const&, Color const&); 
+  void color_start(uint32_t x, uint32_t y);
+  void color_end(uint32_t x, uint32_t y);
 };
 
 /*A class for rendering the Grid*/

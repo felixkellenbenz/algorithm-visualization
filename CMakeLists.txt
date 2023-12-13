@@ -9,7 +9,8 @@ add_executable(
             algo
             src/main.cpp
             src/grid.cpp
-            src/utils.cpp)
+            src/utils.cpp
+            src/algorithms.cpp)
 
                     
 set_target_properties(algo PROPERTIES CXX_STANDARD 17)
@@ -17,7 +18,8 @@ set_target_properties(algo PROPERTIES CXX_STANDARD 17)
 add_library(
        algo_lib
        src/grid.hpp
-       src/utils.hpp)
+       src/utils.hpp
+       src/algorithms.hpp)
 
 set_target_properties(algo_lib PROPERTIES LINKER_LANGUAGE CXX)
 

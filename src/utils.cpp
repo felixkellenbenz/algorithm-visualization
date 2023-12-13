@@ -5,6 +5,7 @@
 #include <array>
 
 #include "utils.hpp"
+#include "grid.hpp"
 
 using option = void(EventHandler::*)(SDL_Event&);
 
@@ -58,7 +59,7 @@ void EventHandler::on_mousebutton_edit(SDL_Event& event)
   SDL_GetMouseState(&mouse_x, &mouse_y);
 
   if (event.button.button == SDL_BUTTON_LEFT)
-    editor.make_obstacle(mouse_x, mouse_y);
+    editor.color_node(mouse_x, mouse_y, OBSTACLE);
 }
 
 void EventHandler::on_key(SDL_Event& event)
@@ -74,9 +75,9 @@ void EventHandler::on_key_edit(SDL_Event& event)
   SDL_GetMouseState(&mouse_x, &mouse_y);
 
   if (event.key.keysym.sym == 101)
-    editor.make_end(mouse_x, mouse_y);
+    editor.color_end(mouse_x, mouse_y);
   else if (event.key.keysym.sym == 115)
-    editor.make_start(mouse_x, mouse_y);
+    editor.color_start(mouse_x, mouse_y);
   else if(event.key.keysym.sym == 105)
     edit_flag = false;
   else if (event.key.keysym.sym == 114)
@@ -86,7 +87,7 @@ void EventHandler::on_key_edit(SDL_Event& event)
 void EventHandler::on_mousemotion_edit(SDL_Event& event)
 {
   if (event.button.button == (SDL_BUTTON_LEFT))
-      editor.make_obstacle(event.motion.x, event.motion.y);
+      editor.color_node(event.motion.x, event.motion.y, OBSTACLE);
 }
 
 void EventHandler::on_mousemotion(SDL_Event& event)
