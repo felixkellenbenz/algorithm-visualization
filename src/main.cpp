@@ -26,7 +26,7 @@ int main (int argc, char *argv[])
 {
   GridBuilder builder(WIDTH - BORDER, HEIGTH - BORDER, BORDER, NODE_SIZE);
   builder.build_grid();
-  auto grid = builder.export_grid();
+  auto grid = builder.build_grid();
   GridEditor editor(grid, NODE_SIZE, BORDER);
 
 
@@ -45,6 +45,8 @@ int main (int argc, char *argv[])
                               0, &window, &renderer);
   GridRenderer grid_renderer(renderer, grid); 
   EventHandler event_handler(editor, running);
+
+
 
   if (!window || !renderer)
   {

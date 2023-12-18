@@ -11,14 +11,14 @@ Color const GridEditor::BASIC = {229, 229, 229};
 Color const GridEditor::START = {51, 184, 100};
 Color const GridEditor::END = {197, 30, 58};
 Color const GridRenderer::BACKGROUND = {36, 36, 36};
-Color const GridBuilder::NODE_COLOR = {220, 220, 220};
+Color const GridBuilder::BASIC_NODE_COLOR = {220, 220, 220};
 
 bool Coordinate::operator==(Coordinate const& cord) const
 {
   return cord.x == x && cord.y == y;
 }
 
-Node::~Node() {}
+Node::~Node() { }
 
 Node& Node::operator=(Node node)
 {
@@ -77,10 +77,10 @@ void Node::set_parent(Node const* node)
 
 Grid::~Grid() {}
 
-std::optional<Node> Grid::find_node(Coordinate const& cord) const
+std::optional<Node> Grid::find_node(uint32_t x, uint32_t y) const
 {
-  auto iter = rects.find(cord);
-  if (iter != rects.end())
+  auto iter = nodes.find({x, y});
+  if (iter != nodes.end())
     return iter->second;
   else
     return {}; 
@@ -89,27 +89,19 @@ std::optional<Node> Grid::find_node(Coordinate const& cord) const
 void Grid::add_node(Node node)
 {
   Coordinate cords = node.coordinates();
-  auto found = rects.find(cords);
-  if (found == rects.end())
+  auto found = nodes.find(cords);
+  if (found == nodes.end())
   {
-    rects.insert({cords, node});
+    nodes.insert({cords, node});
   } else {
     found->second = node;
   }
 
 }
 
-std::optional<Node const*> Grid::find_node(Node const& node) const
-{
-  for (auto const& it : rects)
-    if (it.second == node)
-      return &(it.second);
-  return {};
-}
-
 std::unordered_map<Coordinate, Node> const& Grid::get_nodes() const
 {
-  return rects;
+  return nodes;
 }
 
 std::optional<Node> Grid::get_start() const
@@ -148,15 +140,17 @@ void Grid::set_end(std::optional<Node> node)
     end = node;
 }
 
-void GridBuilder::build_grid()
+Grid GridBuilder::build_grid()
 {
-  // coordinates of the top-left most node is (0,0)
+  
+  Grid grid(grid_width, grid_height);
+
   int next_x = 0, next_y = 0;
   int actual_size = node_size - border;
 
   while (next_x <= grid_width)
   {
-    Node node({next_x, next_y, actual_size, actual_size}, NODE_COLOR);
+    Node node({next_x, next_y, actual_size, actual_size}, BASIC_NODE_COLOR);
     grid.add_node(node);
     next_x += node_size;
 
@@ -167,10 +161,7 @@ void GridBuilder::build_grid()
       next_y += node_size;
     }
   }
-}
 
-Grid GridBuilder::export_grid()
-{
   return grid;
 }
 
@@ -198,19 +189,15 @@ void GridRenderer::render()
   {
     render_node(it.second);
   } 
-
-  if (grid.get_start().has_value())
-    render_node(grid.get_start().value()); 
-
 }
 
 GridEditor::~GridEditor() {}
 
 Coordinate GridEditor::parse_coordinate(uint32_t x, uint32_t y)
 {
-  uint32_t cord_x = x - (x % node_size);
-  uint32_t cord_y = y - (y % node_size);
-  return {cord_x, cord_y};
+  uint32_t coord_x = x - (x % node_size);
+  uint32_t coord_y = y - (y % node_size);
+  return {coord_x, coord_y};
 }
 
 void GridEditor::update_grid(Color const& color, bool free, std::optional<Node> node)
@@ -221,7 +208,6 @@ void GridEditor::update_grid(Color const& color, bool free, std::optional<Node> 
   node->set_color(color);
   grid.add_node(node.value()); 
 }
-
 
 void GridEditor::reset_grid()
 {
@@ -237,54 +223,12 @@ void GridEditor::reset_grid()
 
 void GridEditor::color_node(uint32_t x, uint32_t y, Color const& color)
 {
-  auto cord = parse_coordinate(x, y);
-  auto node = grid.find_node(cord);
+  auto coord = parse_coordinate(x, y);
+  auto node = grid.find_node(coord.x, coord.y);
 
   if (!node.has_value() || !node.value().is_free()) return;
 
-  update_grid(color, false, node);
+  grid.recolor_node(node.value(), false, color);
 }
 
-void GridEditor::color_node(Node const& node, Color const& color)
-{
-  auto cord = node.coordinates();
-  color_node(cord.x, cord.y, color); 
-}
-
-void GridEditor::color_start(uint32_t x, uint32_t y)
-{
-  auto cord = parse_coordinate(x, y);
-  auto node = grid.find_node(cord);
-
-  if (!node.has_value() || !node->is_free()) return;
-
-  node->set_color(START);
-  node->set_free(false);
-
-  if (grid.get_start().has_value())
-  {
-    update_grid(BASIC, true, grid.get_start());
-  }
-
-  grid.add_node(node.value());
-  grid.set_start(node); 
-}
-
-void GridEditor::color_end(uint32_t x, uint32_t y)
-{
-  auto cord = parse_coordinate(x, y);
-  auto node = grid.find_node(cord);
-
-  if (!node.has_value() || !node->is_free()) return;
-
-  node->set_color(END);
-  node->set_free(false);
-
-  if (grid.get_end().has_value())
-  {
-    update_grid(BASIC, true, grid.get_end());
-  }
-
-  grid.add_node(node.value());
-  grid.set_end(node); 
-}
+// TODO: reimplement the Grid Editor
