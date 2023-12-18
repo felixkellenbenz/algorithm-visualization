@@ -26,11 +26,9 @@ typedef struct Color
 
 } Color;
 
-
 Color const OBSTACLE = {36, 36, 36};
 Color const PATH = {0 ,0, 0};
 Color const EXPLORE = {255, 0, 0};
-
 
 typedef struct Coordinate
 {
@@ -101,13 +99,14 @@ private:
   std::unordered_map<Coordinate, Node> nodes;
   std::optional<Node> start;
   std::optional<Node> end;
+  uint32_t node_size;
   uint32_t width;
   uint32_t heigth;
 
 public:
 
-  Grid(uint32_t width, uint32_t heigth) 
-    : nodes(), start(), width(width), heigth(heigth) {}
+  Grid(uint32_t width, uint32_t heigth, uint32_t node_size) 
+    : nodes(), start(), width(width), heigth(heigth), node_size(node_size) {}
 
   Grid(const Grid& grid) : nodes(grid.nodes), start(grid.start) {}
 
@@ -121,6 +120,7 @@ public:
   std::unordered_map<Coordinate, Node> const& get_nodes() const;
   uint32_t get_heigth() const;
   uint32_t get_width() const;
+  uint32_t get_node_size() const;
   std::optional<Node> get_start() const;
   std::optional<Node> get_end() const;
   void set_start(std::optional<Node>); 
@@ -166,20 +166,30 @@ public:
   void render();
 };
 
+enum SpecialNode
+{
+  START,
+  END
+};
 
 class GridEditor
 {
 private:
+  static Color const BASIC_NODE_COLOR;
+  static Color const START_COLOR;
+  static Color const END_COLOR;
+  Grid& grid;
 
-
-
-
-  void handle_start();
-  void handle_end();
+  Coordinate parse_coordinate(uint32_t, uint32_t);
+  void handle_start(Node&);
+  void handle_end(Node&);
 
 public:
+  GridEditor(Grid& grid) : grid(grid) {}
 
+  ~GridEditor();
 
   void clean_grid();
-  void color_node(uint32_t x, uint32_t y, Color color);
+  void color_node(uint32_t, uint32_t, Color const&);
+  void color_unique(uint32_t, uint32_t, Color const&, SpecialNode);
 };

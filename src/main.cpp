@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
   GridBuilder builder(WIDTH - BORDER, HEIGTH - BORDER, BORDER, NODE_SIZE);
   builder.build_grid();
   auto grid = builder.build_grid();
-  GridEditor editor(grid, NODE_SIZE, BORDER);
+  GridEditor editor(grid);
 
 
   SDL_Window *window;
