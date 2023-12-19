@@ -22,7 +22,7 @@ bool algo_running = false;
 int mouse_x, mouse_y;
 
 
-int main (int argc, char *argv[])
+int main ()
 {
   GridBuilder builder(WIDTH - BORDER, HEIGTH - BORDER, BORDER, NODE_SIZE);
   builder.build_grid();

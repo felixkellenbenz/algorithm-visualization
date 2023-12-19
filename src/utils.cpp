@@ -52,7 +52,9 @@ void EventHandler::consider_edit_flag(SDL_Event& event,
 
 void EventHandler::on_mousebutton(SDL_Event& event)
 {
-  
+  // dummy to avoid compiler warning
+  if (event.type == SDL_QUIT)
+    return;
 }
 
 void EventHandler::on_mousebutton_edit(SDL_Event& event)
@@ -93,5 +95,7 @@ void EventHandler::on_mousemotion_edit(SDL_Event& event)
 
 void EventHandler::on_mousemotion(SDL_Event& event)
 {
-  return;
+  // dummy to avoid compiler warning
+  if (event.type == SDL_QUIT)
+    return;
 }

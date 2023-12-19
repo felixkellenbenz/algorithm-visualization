@@ -15,14 +15,14 @@ typedef struct Color
   uint8_t blue;
   uint8_t alpha;
 
-  Color(uint8_t red, uint8_t green, uint8_t blue)
-  : red(red), green(green), blue(blue), 
+  Color(uint8_t _red, uint8_t _green, uint8_t _blue)
+  : red(_red), green(_green), blue(_blue), 
     alpha(SDL_ALPHA_OPAQUE) {}
 
-  Color(uint8_t red, uint8_t green,
-        uint8_t blue, uint8_t alpha)
-  : red(red), green(green), blue(blue),
-    alpha(alpha) {} 
+  Color(uint8_t _red, uint8_t _green,
+        uint8_t _blue, uint8_t _alpha)
+  : red(_red), green(_green), blue(_blue),
+    alpha(_alpha) {} 
 
 } Color;
 
@@ -35,7 +35,7 @@ typedef struct Coordinate
   int32_t x;
   int32_t y;
 
-  Coordinate(uint32_t x = 0, uint32_t y = 0) : x(x), y(y){}
+  Coordinate(uint32_t _x = 0, uint32_t _y = 0) : x(_x), y(_y){}
   Coordinate(Coordinate const& cord): x(cord.x), y(cord.y) {}
 
   bool operator==(Coordinate const&) const;
@@ -47,8 +47,8 @@ struct std::hash<Coordinate>
 {
   std::size_t operator()(Coordinate const& coord) const
   {
-    std::hash<int32_t> hash;
-    return hash(coord.x) ^ (hash(coord.y) << 1);
+    std::hash<int32_t> int_hash;
+    return (int_hash(coord.x)) ^ (int_hash(coord.y) << 1);
   }
 };
 
@@ -66,14 +66,13 @@ private:
   uint64_t distance;
 
 public:
-  Node(SDL_Rect const& rect, Color const& color)
-    : rect(rect), free(true),
-    color(color),  distance(UINT64_MAX) {} 
+  Node(SDL_Rect const& _rect, Color const& _color)
+    : rect(_rect), color(_color),
+      free(true), distance(UINT64_MAX) {} 
 
   Node(Node const& node) :
-      rect(node.rect), free(node.free),
-      color(node.color),
-      distance(node.distance) {}
+      rect(node.rect), color(node.color),
+      free(node.free), distance(node.distance) {}
 
   ~Node();
 
@@ -105,8 +104,8 @@ private:
 
 public:
 
-  Grid(uint32_t width, uint32_t heigth, uint32_t node_size) 
-    : nodes(), start(), width(width), heigth(heigth), node_size(node_size) {}
+  Grid(uint32_t _width, uint32_t _heigth, uint32_t _node_size) 
+    : nodes(), start(), node_size(_node_size), width(_width), heigth(_heigth) {}
 
   Grid(const Grid& grid) : nodes(grid.nodes), start(grid.start) {}
 
@@ -138,10 +137,10 @@ private:
   uint8_t const border;
 
 public:
-  GridBuilder(uint32_t const grid_width, uint32_t const grid_height,
-              uint8_t const border, uint32_t const node_size) 
-    : grid_width(grid_width), grid_height(grid_height),
-    node_size(node_size), border(border) {}
+  GridBuilder(uint32_t const _grid_width, uint32_t const _grid_height,
+              uint8_t const _border, uint32_t const _node_size) 
+    : grid_width(_grid_width), grid_height(_grid_height),
+    node_size(_node_size), border(_border) {}
 
   Grid build_grid();
 };
@@ -160,16 +159,10 @@ private:
   void render_node(Node const& node);
 
 public:
-  GridRenderer(SDL_Renderer *ren,Grid const& grid)
-    : renderer(ren), grid(grid) {}
+  GridRenderer(SDL_Renderer *ren,Grid const& _grid)
+    : renderer(ren), grid(_grid) {}
 
   void render();
-};
-
-enum SpecialNode
-{
-  START,
-  END
 };
 
 class GridEditor
@@ -181,15 +174,12 @@ private:
   Grid& grid;
 
   Coordinate parse_coordinate(uint32_t, uint32_t);
-  void handle_start(Node&);
-  void handle_end(Node&);
 
 public:
-  GridEditor(Grid& grid) : grid(grid) {}
+  GridEditor(Grid& _grid) : grid(_grid) {}
 
   ~GridEditor();
 
   void clean_grid();
   void color_node(uint32_t, uint32_t, Color const&);
-  void color_unique(uint32_t, uint32_t, Color const&, SpecialNode);
 };

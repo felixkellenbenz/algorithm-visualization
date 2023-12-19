@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.25)
 
 project(algorithm-visualization C CXX)
 
+add_compile_options(-Wall -Wshadow -Wextra -Wconversion -Wpedantic -Werror)
+
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 

@@ -27,8 +27,8 @@ private:
   void on_mousemotion(SDL_Event&);
 
 public:
-  EventHandler(GridEditor& editor, bool& running) 
-    : editor(editor), mouse_x(0), mouse_y(0),
-      edit_flag(0), running(running) {}
+  EventHandler(GridEditor& _editor, bool& _running) 
+    : editor(_editor), mouse_x(0), mouse_y(0),
+     running(_running), edit_flag(0) {}
   void handle_events(SDL_Event&);
 };

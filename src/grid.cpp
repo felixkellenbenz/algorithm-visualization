@@ -2,6 +2,7 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 
@@ -169,20 +170,24 @@ Grid GridBuilder::build_grid()
   
   Grid grid(grid_width, grid_height, node_size);
 
-  int next_x = 0, next_y = 0;
+  uint32_t next_x = 0, next_y = 0;
+  int rect_x = 0, rect_y = 0;
   int actual_size = node_size - border;
 
   while (next_x <= grid_width)
   {
-    Node node({next_x, next_y, actual_size, actual_size}, BASIC_NODE_COLOR);
+    Node node({rect_x, rect_y, actual_size, actual_size}, BASIC_NODE_COLOR);
     grid.add_node(node);
     next_x += node_size;
+    rect_x += node_size;
 
     if (next_x >= grid_width
         && next_y <= grid_height)
     {
       next_x = 0;
+      rect_x = 0;
       next_y += node_size;
+      rect_y += node_size;
     }
   }
 
@@ -225,8 +230,6 @@ Coordinate GridEditor::parse_coordinate(uint32_t x, uint32_t y)
   return {coord_x, coord_y};
 }
 
-// TODO: reimplement the Grid Editor
-
 void GridEditor::clean_grid()
 {
   auto nodes = grid.get_nodes();
@@ -242,31 +245,9 @@ void GridEditor::color_node(uint32_t x, uint32_t y,
 {
   auto cord = parse_coordinate(x, y);
   auto node = grid.find_node(cord.x, cord.y);
+  std::optional<Node> to_recolor = {};
 
-  if (!node.has_value()) return;
-  
-  if (!node.value().is_free()) return;
+  if (!(node.has_value() && node.value().is_free())) return;
 
   grid.recolor_node(node.value(), false, color);
-}
-
-void GridEditor::color_unique(uint32_t x, uint32_t y, Color const& color,
-                              SpecialNode flag)
-{
-
-
-
-}
-
-void GridEditor::handle_start(Node& node)
-{
-
- 
-}
-
-
-void GridEditor::handle_end(Node& node)
-{
-
-
 }
