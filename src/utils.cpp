@@ -8,8 +8,11 @@
 #include "utils.hpp"
 #include "grid.hpp"
 
-using option = void(EventHandler::*)(SDL_Event&);
+Color const EventHandler::START_COLOR = {51, 184, 100};
+Color const EventHandler::END_COLOR = {197, 30, 58};
+Color const EventHandler::OBSTACLE = {36, 36, 36};
 
+using option = void(EventHandler::*)(SDL_Event&);
 
 void EventHandler::handle_events(SDL_Event& event)
 {
@@ -78,9 +81,9 @@ void EventHandler::on_key_edit(SDL_Event& event)
   SDL_GetMouseState(&mouse_x, &mouse_y);
 
   if (event.key.keysym.sym == 101)
-    editor.color_node(mouse_x, mouse_y, {255, 0, 0});
+    editor.color_unique(mouse_x, mouse_y, END_COLOR);
   else if (event.key.keysym.sym == 115)
-    editor.color_node(mouse_x, mouse_y, {0, 255, 0});
+    editor.color_unique(mouse_x, mouse_y, START_COLOR);
   else if(event.key.keysym.sym == 105)
     edit_flag = false;
   else if (event.key.keysym.sym == 114)

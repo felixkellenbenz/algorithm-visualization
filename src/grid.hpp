@@ -22,13 +22,11 @@ typedef struct Color
   Color(uint8_t _red, uint8_t _green,
         uint8_t _blue, uint8_t _alpha)
   : red(_red), green(_green), blue(_blue),
-    alpha(_alpha) {} 
+    alpha(_alpha) {}
+
+  bool operator==(Color const&) const;
 
 } Color;
-
-Color const OBSTACLE = {36, 36, 36};
-Color const PATH = {0 ,0, 0};
-Color const EXPLORE = {255, 0, 0};
 
 typedef struct Coordinate
 {
@@ -96,8 +94,6 @@ class Grid
 {
 private: 
   std::unordered_map<Coordinate, Node> nodes;
-  std::optional<Node> start;
-  std::optional<Node> end;
   uint32_t node_size;
   uint32_t width;
   uint32_t heigth;
@@ -105,9 +101,9 @@ private:
 public:
 
   Grid(uint32_t _width, uint32_t _heigth, uint32_t _node_size) 
-    : nodes(), start(), node_size(_node_size), width(_width), heigth(_heigth) {}
+    : nodes(), node_size(_node_size), width(_width), heigth(_heigth) {}
 
-  Grid(const Grid& grid) : nodes(grid.nodes), start(grid.start) {}
+  Grid(const Grid& grid) : nodes(grid.nodes) {}
 
   ~Grid();
 
@@ -182,4 +178,5 @@ public:
 
   void clean_grid();
   void color_node(uint32_t, uint32_t, Color const&);
+  void color_unique(uint32_t, uint32_t, Color const&);
 };

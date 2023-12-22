@@ -10,6 +10,9 @@
 class EventHandler
 {
 private:
+  static Color const END_COLOR;
+  static Color const START_COLOR;
+  static Color const OBSTACLE;
   GridEditor& editor;
   int mouse_x, mouse_y;
   bool& running;

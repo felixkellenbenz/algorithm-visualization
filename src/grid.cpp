@@ -9,10 +9,14 @@
 #include "grid.hpp"
 
 Color const GridEditor::BASIC_NODE_COLOR = {229, 229, 229};
-Color const GridEditor::START_COLOR = {51, 184, 100};
-Color const GridEditor::END_COLOR = {197, 30, 58};
 Color const GridRenderer::BACKGROUND = {36, 36, 36};
-Color const GridBuilder::BASIC_NODE_COLOR = {220, 220, 220};
+Color const GridBuilder::BASIC_NODE_COLOR = {229, 220, 220};
+
+bool Color::operator==(Color const& color) const
+{
+  return red == color.red && green == color.green 
+         && blue == color.blue && alpha == color.alpha; 
+}
 
 bool Coordinate::operator==(Coordinate const& cord) const
 {
@@ -124,11 +128,6 @@ std::unordered_map<Coordinate, Node> const& Grid::get_nodes() const
   return nodes;
 }
 
-std::optional<Node> Grid::get_start() const
-{
-  return start;
-}
-
 uint32_t Grid::get_width() const
 {
   return width;
@@ -142,27 +141,6 @@ uint32_t Grid::get_heigth() const
 uint32_t Grid::get_node_size() const
 {
   return node_size;
-}
-
-std::optional<Node> Grid::get_end() const
-{
-  return end;
-}
-
-void Grid::set_start(std::optional<Node> node)
-{
-  if (node.has_value())
-    start.emplace(node.value());
-  else
-    start = node;
-}
-
-void Grid::set_end(std::optional<Node> node)
-{
-  if (node.has_value())
-    end.emplace(node.value());
-  else
-    end = node;
 }
 
 Grid GridBuilder::build_grid()
@@ -249,5 +227,22 @@ void GridEditor::color_node(uint32_t x, uint32_t y,
 
   if (!(node.has_value() && node.value().is_free())) return;
 
+  grid.recolor_node(node.value(), false, color);
+}
+
+void GridEditor::color_unique(uint32_t x, uint32_t y,
+                              Color const& color)
+{
+  auto& nodes = grid.get_nodes();
+  auto cord = parse_coordinate(x, y);
+  auto node = grid.find_node(cord.x, cord.y); 
+
+  if (!node.has_value()) return;
+
+  for (auto const& current_node : nodes)
+    if (current_node.second.get_color() == color)
+      grid.recolor_node(current_node.second, 
+                        true, BASIC_NODE_COLOR);
+  
   grid.recolor_node(node.value(), false, color);
 }
