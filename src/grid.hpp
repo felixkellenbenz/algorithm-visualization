@@ -7,7 +7,10 @@
 #include <optional>
 #include <unordered_map>
 
-
+/*
+ * A structure that holds information about
+ * the rgba values of a colour.
+ */
 typedef struct Color 
 {
   uint8_t red;
@@ -28,6 +31,9 @@ typedef struct Color
 
 } Color;
 
+/*
+ * A struct reprsenting a point in 2D space
+ */
 typedef struct Coordinate
 {
   int32_t x;
