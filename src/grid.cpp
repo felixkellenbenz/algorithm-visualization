@@ -246,3 +246,21 @@ void GridEditor::color_unique(uint32_t x, uint32_t y,
   
   grid.recolor_node(node.value(), false, color);
 }
+
+Color GridEditor::get_start_color() const 
+{
+  return END_COLOR;
+}
+
+Color GridEditor::get_end_color() const 
+{
+  return START_COLOR;
+} 
+
+
+
+
+
+
+
+
