@@ -9,10 +9,7 @@
 
 class EventHandler
 {
-private:
-  static Color const END_COLOR;
-  static Color const START_COLOR;
-  static Color const OBSTACLE;
+private: 
   GridEditor& editor;
   int mouse_x, mouse_y;
   bool& running;
@@ -30,8 +27,13 @@ private:
   void on_mousemotion(SDL_Event&);
 
 public:
+  static Color const END_COLOR;
+  static Color const START_COLOR;
+  static Color const OBSTACLE;
+
   EventHandler(GridEditor& _editor, bool& _running) 
     : editor(_editor), mouse_x(0), mouse_y(0),
      running(_running), edit_flag(0) {}
+
   void handle_events(SDL_Event&);
 };

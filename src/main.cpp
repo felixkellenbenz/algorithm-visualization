@@ -35,17 +35,17 @@ int main ()
 
   if (SDL_Init(SDL_INIT_EVERYTHING))
   {
-    std::cout << "Error: Could not init sdl\n";
+    std::cout << "Error: Could not initialize SDL\n";
   }
 
   // we have to decrement the width and heigth by border because of 
   // the way we render nodes 
   SDL_CreateWindowAndRenderer(WIDTH - BORDER, HEIGTH - BORDER, 
                               0, &window, &renderer);
-  GridRenderer grid_renderer(renderer, grid); 
+  GridRenderer grid_renderer(renderer); 
   EventHandler event_handler(editor, running);
-
-
+  BFS bfs;
+  PathFinder finder(&bfs);
 
   if (!window || !renderer)
   {
@@ -56,7 +56,9 @@ int main ()
   {
     event_handler.handle_events(event); 
 
-    grid_renderer.render();
+    grid_renderer.render(grid);
+
+    finder.find_path(grid, grid_renderer);
 
     SDL_RenderPresent(renderer); 
   }

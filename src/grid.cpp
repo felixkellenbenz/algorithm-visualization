@@ -184,7 +184,7 @@ void GridRenderer::render_node(Node const& node)
   SDL_RenderDrawRect(renderer, &next_rect); 
 }
 
-void GridRenderer::render()
+void GridRenderer::render(Grid const& grid)
 {
   SDL_SetRenderDrawColor(renderer, BACKGROUND.red, 
                          BACKGROUND.green, BACKGROUND.blue,

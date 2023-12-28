@@ -10,26 +10,34 @@
 
 class Path 
 {
+private:
+
+
+public:
 
 };
 
 class PathFindingStrategy
 {
 public:
-  virtual bool make_step(Grid&, Color&) = 0;
+  virtual bool explore(Grid&, Color const&) = 0;
+  virtual void set_start(Node) = 0;
+  virtual void set_end(Node) = 0;
 };
 
 class BFS : public PathFindingStrategy
 {
-private:
+private :
+  std::array<std::array<int, 2>, 4> const offsets =  {{{-20, 0}, {20, 0}, {0, -20}, {0, 20}}};
   std::queue<Node> explore_queue;
+  std::optional<Node> start;
+  std::optional<Node> end;
 
 public:
   
-  bool make_step(Grid&, Color&) override;
-
-
-
+  bool explore(Grid&, Color const&) override;
+  void set_start(Node) override;
+  void set_end(Node) override;
 };
 
 class PathFinder
@@ -41,10 +49,14 @@ private:
   std::optional<Node> end;
   PathFindingStrategy* strategy;
 
-  bool validate();
+  bool validate(Grid&);
 
-public:  
-  void find_path(Grid&, GridRenderer&); 
+public: 
+
+  PathFinder(PathFindingStrategy* _strategy)
+    : strategy(_strategy) {} 
+
+  bool find_path(Grid&, GridRenderer& renderer); 
 
   Path backtrack();
 

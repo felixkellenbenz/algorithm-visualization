@@ -156,15 +156,14 @@ class GridRenderer
 private:
   static Color const BACKGROUND;
   SDL_Renderer *renderer;
-  Grid const& grid;
 
   void render_node(Node const& node);
 
 public:
-  GridRenderer(SDL_Renderer *ren,Grid const& _grid)
-    : renderer(ren), grid(_grid) {}
+  GridRenderer(SDL_Renderer *ren)
+    : renderer(ren) {}
 
-  void render();
+  void render(Grid const&);
 };
 
 class GridEditor
