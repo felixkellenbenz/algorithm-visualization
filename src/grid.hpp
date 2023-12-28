@@ -115,7 +115,7 @@ public:
 
   std::optional<Node> find_node(uint32_t x, uint32_t y) const;
   void recolor_node(Node const&, bool, Color const&);
-  void link_nodes(Node const&, Node const&) const;
+  void link_nodes(Node const&, Node const&);
   void add_node(Node);
 
   std::unordered_map<Coordinate, Node> const& get_nodes() const;
@@ -171,8 +171,6 @@ class GridEditor
 {
 private:
   static Color const BASIC_NODE_COLOR;
-  static Color const START_COLOR;
-  static Color const END_COLOR;
   Grid& grid;
 
   Coordinate parse_coordinate(uint32_t, uint32_t);
@@ -185,7 +183,4 @@ public:
   void clean_grid();
   void color_node(uint32_t, uint32_t, Color const&);
   void color_unique(uint32_t, uint32_t, Color const&);
-
-  Color get_start_color() const;
-  Color get_end_color() const;
 };

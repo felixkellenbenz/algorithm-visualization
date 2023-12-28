@@ -16,24 +16,36 @@ class Path
 class PathFindingStrategy
 {
 public:
-  virtual void make_step(Grid&, GridEditor&,std::queue<Node>&) = 0;
+  virtual bool make_step(Grid&, Color&) = 0;
 };
 
 class BFS : public PathFindingStrategy
 {
 private:
+  std::queue<Node> explore_queue;
 
 public:
-  void make_step(Grid&, GridEditor&,std::queue<Node>&) override;
+  
+  bool make_step(Grid&, Color&) override;
+
+
+
 };
 
 class PathFinder
 {
 private:
-  
-  bool validate(Grid const&);
+  static Color const EXPLORE_COLOR;
+  static Color const PATH_COLOR;
+  std::optional<Node> start;
+  std::optional<Node> end;
+  PathFindingStrategy* strategy;
 
-public: 
+  bool validate();
 
-  void find_path(Grid&);
+public:  
+  void find_path(Grid&, GridRenderer&); 
+
+  Path backtrack();
+
 };

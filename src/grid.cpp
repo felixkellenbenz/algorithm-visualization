@@ -10,7 +10,7 @@
 
 Color const GridEditor::BASIC_NODE_COLOR = {229, 229, 229};
 Color const GridRenderer::BACKGROUND = {36, 36, 36};
-Color const GridBuilder::BASIC_NODE_COLOR = {229, 220, 220};
+Color const GridBuilder::BASIC_NODE_COLOR = {229, 229, 229};
 
 bool Color::operator==(Color const& color) const
 {
@@ -246,21 +246,3 @@ void GridEditor::color_unique(uint32_t x, uint32_t y,
   
   grid.recolor_node(node.value(), false, color);
 }
-
-Color GridEditor::get_start_color() const 
-{
-  return END_COLOR;
-}
-
-Color GridEditor::get_end_color() const 
-{
-  return START_COLOR;
-} 
-
-
-
-
-
-
-
-
