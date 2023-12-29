@@ -29,6 +29,10 @@ Node& Node::operator=(Node node)
 {
   free = node.free;
   color = node.color;
+  rect.x = node.rect.x;
+  rect.y = node.rect.y;
+  parent = node.parent;
+  distance = node.distance;
   return *this;
 }
 

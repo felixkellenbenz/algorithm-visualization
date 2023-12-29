@@ -63,7 +63,7 @@ struct std::hash<Coordinate>
 class Node
 {
 private:
-  SDL_Rect const rect;
+  SDL_Rect rect;
   Color color;
   std::optional<Node*> parent;
   bool free;

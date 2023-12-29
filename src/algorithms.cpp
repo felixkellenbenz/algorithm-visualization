@@ -9,7 +9,8 @@
 #include <iterator>
 
 
-Color const PathFinder::EXPLORE_COLOR = {100, 150, 235};
+Color const PathFinder::EXPLORE_COLOR = {67, 85, 133};
+Color const PathFinder::PATH_COLOR = {188, 163, 127};
 
 void BFS::set_start(Node node)
 {
@@ -107,14 +108,14 @@ bool PathFinder::backtrack(Grid& grid)
   Node next = *(end_opt->get_parent().value());
 
   while (next.get_parent().has_value() 
-    && !(*(next.get_parent().value()) == start.value()))
+    && !(next == start.value()))
   {
     path.push_back(next);
     Node* parent = next.get_parent().value();
     next = *parent;
   }
 
-  if (next == start)
+  if (next == start.value())
     return true;
   else 
     return false; 
@@ -123,9 +124,8 @@ bool PathFinder::backtrack(Grid& grid)
 
 void PathFinder::color_path(Grid& grid)
 {
-  auto nodes = grid.get_nodes();
-  for (auto& node : nodes)
+  for (auto& node : path)
   {
-    grid.recolor_node(node.second, false, {0, 200, 0});
+    grid.recolor_node(node, false, PATH_COLOR);
   }
 }
