@@ -127,6 +127,14 @@ void Grid::add_node(Node node)
 
 }
 
+void Grid::reset()
+{
+  for (auto& node : nodes)
+  {
+    node.second.set_parent({});
+  }
+}
+
 std::unordered_map<Coordinate, Node> const& Grid::get_nodes() const
 {
   return nodes;
@@ -218,10 +226,11 @@ void GridEditor::clean_grid()
 {
   auto nodes = grid.get_nodes();
 
-  for (auto const& it : nodes)
+  for (auto& it : nodes)
   {
     grid.recolor_node(it.second, true, BASIC_NODE_COLOR);
   }
+  grid.reset();
 }
 
 void GridEditor::color_node(uint32_t x, uint32_t y, 
@@ -251,4 +260,16 @@ void GridEditor::color_unique(uint32_t x, uint32_t y,
                         true, BASIC_NODE_COLOR);
   
   grid.recolor_node(node.value(), false, color);
+}
+
+void GridEditor::clean_color(Color const& color)
+{
+  auto& nodes = grid.get_nodes();
+
+  for (auto& node : nodes)
+  {
+    if (node.second.get_color() == color)
+      grid.recolor_node(node.second, true, BASIC_NODE_COLOR);
+
+  }
 }

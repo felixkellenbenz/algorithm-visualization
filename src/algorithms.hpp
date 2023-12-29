@@ -1,3 +1,4 @@
+#pragma once
 #include <cstdint>
 #include <optional>
 #include <queue>
@@ -8,18 +9,10 @@
 
 #include "grid.hpp"
 
-class Path 
-{
-private:
-
-
-public:
-
-};
-
 class PathFindingStrategy
 {
 public:
+  virtual void reset() = 0;
   virtual bool explore(Grid&, Color const&) = 0;
   virtual void set_start(Node) = 0;
   virtual void set_end(Node) = 0;
@@ -35,6 +28,16 @@ private :
 
 public:
   
+  void reset() override;
+  bool explore(Grid&, Color const&) override;
+  void set_start(Node) override;
+  void set_end(Node) override;
+};
+
+class NullStrategy : public PathFindingStrategy
+{
+public:
+  void reset() override;
   bool explore(Grid&, Color const&) override;
   void set_start(Node) override;
   void set_end(Node) override;
@@ -43,8 +46,6 @@ public:
 class PathFinder
 {
 private:
-  static Color const EXPLORE_COLOR;
-  static Color const PATH_COLOR;
   std::optional<Node> start;
   std::optional<Node> end;
   PathFindingStrategy* strategy;
@@ -52,7 +53,9 @@ private:
 
   
 
-public: 
+public:
+  static Color const EXPLORE_COLOR;
+  static Color const PATH_COLOR;
 
   PathFinder(PathFindingStrategy* _strategy)
     : strategy(_strategy) {}
@@ -64,5 +67,7 @@ public:
   bool find_path(Grid&, GridRenderer&); 
 
   bool backtrack(Grid& grid);
+
+  void set_strategy(PathFindingStrategy*);
 
 };

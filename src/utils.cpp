@@ -5,6 +5,7 @@
 #include <array>
 #include <iostream>
 
+#include "algorithms.hpp"
 #include "utils.hpp"
 #include "grid.hpp"
 
@@ -74,6 +75,14 @@ void EventHandler::on_key(SDL_Event& event)
     edit_flag = true;
   else if (event.key.keysym.sym == 114)
     editor.clean_grid();
+  else if (event.key.keysym.sym == 98)
+   executed = true;
+  else if (event.key.keysym.sym == 99)
+  {
+    editor.clean_color(PathFinder::EXPLORE_COLOR);
+    editor.clean_color(PathFinder::PATH_COLOR); 
+  }
+
 }
 
 void EventHandler::on_key_edit(SDL_Event& event)
@@ -88,6 +97,11 @@ void EventHandler::on_key_edit(SDL_Event& event)
     edit_flag = false;
   else if (event.key.keysym.sym == 114)
     editor.clean_grid();
+  else if (event.key.keysym.sym == 99)
+  {
+    editor.clean_color(PathFinder::EXPLORE_COLOR);
+    editor.clean_color(PathFinder::PATH_COLOR); 
+  }
 }
 
 void EventHandler::on_mousemotion_edit(SDL_Event& event)

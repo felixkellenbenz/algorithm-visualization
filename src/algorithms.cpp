@@ -7,6 +7,7 @@
 #include <SDL2/SDL_timer.h>
 #include <cstdint>
 #include <iterator>
+#include <vector>
 
 
 Color const PathFinder::EXPLORE_COLOR = {67, 85, 133};
@@ -25,14 +26,13 @@ void BFS::set_end(Node node)
 
 bool BFS::explore(Grid& grid, Color const& color)
 {
-  end->set_free(true);
   if (explore_queue.empty()) return true;
 
   auto next = explore_queue.front();
   auto next_coords = next.coordinates();
   explore_queue.pop();
 
-  for (std::size_t i = 0; i < 4; i++)
+  for (uint8_t i  = 0; i < 4; i++)
   {
     uint32_t neigbour_y = next_coords.y + offsets[i][1];
     uint32_t neigbour_x = next_coords.x + offsets[i][0];
@@ -58,6 +58,39 @@ bool BFS::explore(Grid& grid, Color const& color)
   return false; 
 }
 
+void BFS::reset()
+{
+  start = {};
+  end = {};
+  
+  while (!explore_queue.empty())
+  {
+    explore_queue.pop();
+  }
+}
+
+void NullStrategy::set_start(Node start) 
+{
+  start.get_parent();
+}
+
+void NullStrategy::set_end(Node end) 
+{
+  end.get_parent();
+}
+
+bool NullStrategy::explore(Grid& grid, Color const& color) 
+{
+  auto nodes = grid.get_nodes();
+  Color ref_color = color;
+  return ref_color.red;
+}
+
+void NullStrategy::reset()
+{
+
+}
+
 bool PathFinder::validate(Grid& grid)
 {
   auto nodes = grid.get_nodes();
@@ -73,9 +106,11 @@ bool PathFinder::validate(Grid& grid)
   return end.has_value() && start.has_value();
 }
 
-
 bool PathFinder::find_path(Grid& grid, GridRenderer& renderer)
-{  
+{ 
+  path.clear();
+  strategy->reset();
+
   strategy->set_start(start.value());
   strategy->set_end(end.value());
   
@@ -85,7 +120,7 @@ bool PathFinder::find_path(Grid& grid, GridRenderer& renderer)
   {
     found = strategy->explore(grid, EXPLORE_COLOR);
     renderer.render(grid);
-    SDL_Delay(2);
+    SDL_Delay(5);
   }
 
   if (backtrack(grid))
@@ -128,4 +163,9 @@ void PathFinder::color_path(Grid& grid)
   {
     grid.recolor_node(node, false, PATH_COLOR);
   }
+}
+
+void PathFinder::set_strategy(PathFindingStrategy* _strategy)
+{
+  strategy = _strategy;
 }

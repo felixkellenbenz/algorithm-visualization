@@ -117,6 +117,7 @@ public:
   void recolor_node(Node const&, bool, Color const&);
   void link_nodes(Node const&, Node const&);
   void add_node(Node);
+  void reset();
 
   std::unordered_map<Coordinate, Node> const& get_nodes() const;
   uint32_t get_heigth() const;
@@ -178,7 +179,8 @@ public:
   GridEditor(Grid& _grid) : grid(_grid) {}
 
   ~GridEditor();
-
+  
+  void clean_color(Color const&);
   void clean_grid();
   void color_node(uint32_t, uint32_t, Color const&);
   void color_unique(uint32_t, uint32_t, Color const&);

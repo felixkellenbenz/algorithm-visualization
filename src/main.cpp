@@ -13,8 +13,8 @@
 #include "utils.hpp"
 #include "algorithms.hpp"
 
-uint32_t const WIDTH = 720;
-uint32_t const HEIGTH = 540;
+uint32_t const WIDTH = 920;
+uint32_t const HEIGTH = 780;
 uint8_t const BORDER = 1;
 uint32_t const NODE_SIZE = 20;
 bool running = true;
@@ -32,6 +32,7 @@ int main ()
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Event event;
+  BFS placeholder;
 
   if (SDL_Init(SDL_INIT_EVERYTHING))
   {
@@ -43,9 +44,8 @@ int main ()
   SDL_CreateWindowAndRenderer(WIDTH - BORDER, HEIGTH - BORDER, 
                               0, &window, &renderer);
   GridRenderer grid_renderer(renderer); 
-  EventHandler event_handler(editor, running);
-  BFS bfs;
-  PathFinder finder(&bfs);
+  EventHandler event_handler(editor, running, executed); 
+  PathFinder finder(&placeholder);
 
   if (!window || !renderer)
   {
@@ -58,10 +58,10 @@ int main ()
 
     grid_renderer.render(grid);
     
-    if (finder.validate(grid) && !executed)
+    if (finder.validate(grid) && executed)
     {
       finder.find_path(grid, grid_renderer);
-      executed = true;
+      executed = false;
     } 
   }
 
