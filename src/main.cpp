@@ -18,7 +18,7 @@ uint32_t const HEIGTH = 540;
 uint8_t const BORDER = 1;
 uint32_t const NODE_SIZE = 20;
 bool running = true;
-bool algo_running = false;
+bool executed = false;
 int mouse_x, mouse_y;
 
 
@@ -57,10 +57,12 @@ int main ()
     event_handler.handle_events(event); 
 
     grid_renderer.render(grid);
-
-    finder.find_path(grid, grid_renderer);
-
-    SDL_RenderPresent(renderer); 
+    
+    if (finder.validate(grid) && !executed)
+    {
+      finder.find_path(grid, grid_renderer);
+      executed = true;
+    } 
   }
 
   SDL_DestroyWindow(window);

@@ -3,6 +3,7 @@
 #include "algorithms.hpp"
 #include "grid.hpp"
 #include "utils.hpp"
+#include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
 #include <cstdint>
 #include <iterator>
@@ -36,17 +37,21 @@ bool BFS::explore(Grid& grid, Color const& color)
     uint32_t neigbour_x = next_coords.x + offsets[i][0];
     auto neigbour = grid.find_node(neigbour_x, neigbour_y);
 
-    if (!(neigbour.has_value() && neigbour.value().is_free()))
-      continue;
+
+    if (!(neigbour.has_value())) continue;
+
+    if (neigbour.value() == end.value())
+    {
+      grid.link_nodes(next, end.value());
+      return true;
+    }
+
+    if (!neigbour.value().is_free() || neigbour.value() == next) continue;
 
     explore_queue.push(neigbour.value());
 
     grid.link_nodes(next, neigbour.value());
-    grid.recolor_node(neigbour.value(), false, color);
-
-    if (neigbour.value() == end.value())
-      return true;
-    
+    grid.recolor_node(neigbour.value(), false, color);  
   }
 
   return false; 
@@ -69,23 +74,58 @@ bool PathFinder::validate(Grid& grid)
 
 
 bool PathFinder::find_path(Grid& grid, GridRenderer& renderer)
-{
-  if (!validate(grid) || !strategy) return false;
-  
+{  
   strategy->set_start(start.value());
   strategy->set_end(end.value());
   
-  // This should be in a while loop, but it doesn't work
-  strategy->explore(grid, EXPLORE_COLOR);
-  renderer.render(grid);
-  
-  SDL_Delay(2);
+  bool found = false;
 
-  return false;
+  while(!found)
+  {
+    found = strategy->explore(grid, EXPLORE_COLOR);
+    renderer.render(grid);
+    SDL_Delay(2);
+  }
+
+  if (backtrack(grid))
+  {
+    color_path(grid);
+    return true;
+  }
+  else
+    return false;
 }
 
-Path PathFinder::backtrack()
+bool PathFinder::backtrack(Grid& grid)
 {
+  auto end_coords = end->coordinates();
+  auto end_opt = grid.find_node(end_coords.x, end_coords.y);
 
-  return {};
+  if (!(end_opt.has_value() 
+    && end_opt.value().get_parent().has_value())) return false;
+
+  Node next = *(end_opt->get_parent().value());
+
+  while (next.get_parent().has_value() 
+    && !(*(next.get_parent().value()) == start.value()))
+  {
+    path.push_back(next);
+    Node* parent = next.get_parent().value();
+    next = *parent;
+  }
+
+  if (next == start)
+    return true;
+  else 
+    return false; 
+
+}
+
+void PathFinder::color_path(Grid& grid)
+{
+  auto nodes = grid.get_nodes();
+  for (auto& node : nodes)
+  {
+    grid.recolor_node(node.second, false, {0, 200, 0});
+  }
 }

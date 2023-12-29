@@ -35,7 +35,7 @@ Node& Node::operator=(Node node)
 bool Node::operator==(Node const& node) const
 {
   return rect.x == node.rect.x && rect.y == node.rect.y 
-          && node.distance == distance && free == node.free;
+          && node.distance == distance;
 }
 
 Coordinate Node::coordinates() const
@@ -60,7 +60,7 @@ Color Node::get_color() const
   return color;
 }
 
-std::optional<Node const*> Node::get_parent() const
+std::optional<Node*> Node::get_parent() const
 {
   return parent;
 }
@@ -75,7 +75,7 @@ void Node::set_color(Color new_color)
   color = new_color;
 }
 
-void Node::set_parent(Node const* node)
+void Node::set_parent(Node* node)
 {
   parent.emplace(node);
 }
@@ -195,7 +195,9 @@ void GridRenderer::render(Grid const& grid)
   for (auto const& it : nodes)
   {
     render_node(it.second);
-  } 
+  }
+
+  SDL_RenderPresent(renderer);
 }
 
 GridEditor::~GridEditor() {}

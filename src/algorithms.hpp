@@ -48,16 +48,21 @@ private:
   std::optional<Node> start;
   std::optional<Node> end;
   PathFindingStrategy* strategy;
+  std::vector<Node> path;
 
-  bool validate(Grid&);
+  
 
 public: 
 
   PathFinder(PathFindingStrategy* _strategy)
-    : strategy(_strategy) {} 
+    : strategy(_strategy) {}
 
-  bool find_path(Grid&, GridRenderer& renderer); 
+  void color_path(Grid& grid);
 
-  Path backtrack();
+  bool validate(Grid&);
+
+  bool find_path(Grid&, GridRenderer&); 
+
+  bool backtrack(Grid& grid);
 
 };

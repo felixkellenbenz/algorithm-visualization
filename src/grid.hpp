@@ -65,7 +65,7 @@ class Node
 private:
   SDL_Rect const rect;
   Color color;
-  std::optional<Node const*> parent;
+  std::optional<Node*> parent;
   bool free;
   uint64_t distance;
 
@@ -75,7 +75,7 @@ public:
       free(true), distance(UINT64_MAX) {} 
 
   Node(Node const& node) :
-      rect(node.rect), color(node.color),
+      rect(node.rect), color(node.color), parent(node.parent),
       free(node.free), distance(node.distance) {}
 
   ~Node();
@@ -87,10 +87,10 @@ public:
   bool is_free() const;
   SDL_Rect get_rect() const;
   Color get_color() const;
-  std::optional<Node const*> get_parent() const;
+  std::optional<Node*> get_parent() const;
   void set_free(bool);
   void set_color(Color);
-  void set_parent(Node const*);
+  void set_parent(Node*);
 };
 
 /* 
