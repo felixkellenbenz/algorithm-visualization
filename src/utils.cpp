@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_mouse.h>
+#include <algorithm>
 #include <functional>
 #include <array>
 #include <iostream>
@@ -82,7 +83,14 @@ void EventHandler::on_key(SDL_Event& event)
     editor.clean_color(PathFinder::EXPLORE_COLOR);
     editor.clean_color(PathFinder::PATH_COLOR); 
   }
-
+  else if (event.key.keysym.sym == 49) 
+  {
+    strategy = &null_strat;
+  } else if (event.key.keysym.sym == 50) 
+  {
+    BFS finding_strat;
+    strategy = &bfs;
+  }
 }
 
 void EventHandler::on_key_edit(SDL_Event& event)
@@ -115,4 +123,9 @@ void EventHandler::on_mousemotion(SDL_Event& event)
   // dummy to avoid compiler warning
   if (event.type == SDL_QUIT)
     return;
+}
+
+PathFindingStrategy* EventHandler::get_pathfinding_strategy()
+{
+  return strategy;
 }

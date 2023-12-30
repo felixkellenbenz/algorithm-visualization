@@ -1,14 +1,12 @@
 
+#include <SDL2/SDL_render.h>
+#include <SDL2/SDL_timer.h>
+#include <iterator>
+#include <vector>
 
 #include "algorithms.hpp"
 #include "grid.hpp"
 #include "utils.hpp"
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_timer.h>
-#include <cstdint>
-#include <iterator>
-#include <vector>
-
 
 Color const PathFinder::EXPLORE_COLOR = {67, 85, 133};
 Color const PathFinder::PATH_COLOR = {188, 163, 127};
@@ -38,8 +36,8 @@ bool BFS::explore(Grid& grid, Color const& color)
     uint32_t neigbour_x = next_coords.x + offsets[i][0];
     auto neigbour = grid.find_node(neigbour_x, neigbour_y);
 
-
-    if (!(neigbour.has_value())) continue;
+    if (!(neigbour.has_value()) || 
+        neigbour_y > grid.get_heigth() || neigbour_x > grid.get_width()) continue;
 
     if (neigbour.value() == end.value())
     {
@@ -109,6 +107,7 @@ bool PathFinder::validate(Grid& grid)
 bool PathFinder::find_path(Grid& grid, GridRenderer& renderer)
 { 
   path.clear();
+  grid.reset();
   strategy->reset();
 
   strategy->set_start(start.value());
@@ -120,7 +119,7 @@ bool PathFinder::find_path(Grid& grid, GridRenderer& renderer)
   {
     found = strategy->explore(grid, EXPLORE_COLOR);
     renderer.render(grid);
-    SDL_Delay(5);
+    SDL_Delay(2);
   }
 
   if (backtrack(grid))
@@ -137,8 +136,11 @@ bool PathFinder::backtrack(Grid& grid)
   auto end_coords = end->coordinates();
   auto end_opt = grid.find_node(end_coords.x, end_coords.y);
 
-  if (!(end_opt.has_value() 
-    && end_opt.value().get_parent().has_value())) return false;
+  if (!end_opt.has_value()) return false;
+
+  if (!(end_opt.value().get_parent().has_value())) return false;
+
+  if (!(end_opt.value().get_parent().value())) return false;
 
   Node next = *(end_opt->get_parent().value());
 

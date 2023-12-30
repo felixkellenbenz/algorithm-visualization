@@ -32,7 +32,8 @@ int main ()
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Event event;
-  BFS placeholder;
+  BFS null_strategy;
+  PathFindingStrategy* placeholder = &null_strategy;
 
   if (SDL_Init(SDL_INIT_EVERYTHING))
   {
@@ -44,8 +45,8 @@ int main ()
   SDL_CreateWindowAndRenderer(WIDTH - BORDER, HEIGTH - BORDER, 
                               0, &window, &renderer);
   GridRenderer grid_renderer(renderer); 
-  EventHandler event_handler(editor, running, executed); 
-  PathFinder finder(&placeholder);
+  EventHandler event_handler(editor, running, executed, placeholder); 
+  PathFinder finder(placeholder);
 
   if (!window || !renderer)
   {
@@ -60,6 +61,7 @@ int main ()
     
     if (finder.validate(grid) && executed)
     {
+      finder.set_strategy(event_handler.get_pathfinding_strategy());
       finder.find_path(grid, grid_renderer);
       executed = false;
     } 

@@ -3,7 +3,6 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
-#include <cstdint>
 #include <optional>
 #include <unordered_map>
 
