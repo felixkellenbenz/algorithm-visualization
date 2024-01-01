@@ -29,6 +29,7 @@ and end node, select an algorithms and execute the algorithm.
 To edit the grid you have to enter edit mode you can do so by
 pressing the **i - key** Once in edit mode you have the following options.
 - **left mousebutton**: draw obstacles.
+- **right mousebutton**: remove obstacles.
 - **e - key**: create the end node at the location of the cursor.
 - **s - key**: create the start node at the location of the cursor.
 - **r - key**: reset the grid.
@@ -37,10 +38,9 @@ pressing the **i - key** Once in edit mode you have the following options.
 ### Select an algorithm
 Outside the edit mode you can chose between diffrent algorithms you want 
 to execute on the grid.
-- **1 - key**: Null Algorithm (execute nothing on the grid)
-- **2 - key**: BFS
-- **3 - key**: Dijkstra (not implemented yet)
-- **4 - key**: A* (not implemented yet)
+- **1 - key**: Null Algorithm (execute nothing on the grid).
+- **2 - key**: BFS.
+- **3 - key**: Dijkstra (not implemented yet).
+- **4 - key**: A* (not implemented yet).
 
 You can begin the execution of an algorithm by pressing the **b - key**.
-
