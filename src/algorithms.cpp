@@ -11,8 +11,8 @@
 #include "grid.hpp"
 #include "utils.hpp"
 
-Color const PathFinder::EXPLORE_COLOR = {67, 85, 133};
-Color const PathFinder::PATH_COLOR = {188, 163, 127};
+Color const PathFinder::EXPLORE_COLOR = {0, 206, 209};
+Color const PathFinder::PATH_COLOR = {255, 195, 11};
 
 void BFS::set_start(Node node)
 {
@@ -141,7 +141,7 @@ bool PathFinder::find_path(Grid& grid, GridRenderer& renderer)
   {
     found = strategy->explore(grid, EXPLORE_COLOR);
     renderer.render(grid);
-    SDL_Delay(2);
+    SDL_Delay(5);
   }
 
   if (backtrack(grid))

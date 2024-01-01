@@ -11,14 +11,14 @@
 #include "utils.hpp"
 #include "algorithms.hpp"
 
-uint32_t const WIDTH = 920;
-uint32_t const HEIGTH = 780;
+// TODO: wrap this in a settings object and allow the 
+// user to set window size and node size
+uint32_t const WIDTH = 930;
+uint32_t const HEIGTH = 840;
 uint8_t const BORDER = 1;
-uint32_t const NODE_SIZE = 20;
+uint32_t const NODE_SIZE = 30;
 bool running = true;
 bool executed = false;
-int mouse_x, mouse_y;
-
 
 int main ()
 {
