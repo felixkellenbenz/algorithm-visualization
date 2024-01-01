@@ -234,14 +234,14 @@ void GridEditor::clean_grid()
 }
 
 void GridEditor::color_node(uint32_t x, uint32_t y, 
-                            Color const& color)
+                            bool visitable ,Color const& color)
 {
   auto cord = parse_coordinate(x, y);
   auto node = grid.find_node(cord.x, cord.y);
 
-  if (!(node.has_value() && node.value().is_free())) return;
+  if (!(node.has_value())) return;
 
-  grid.recolor_node(node.value(), false, color);
+  grid.recolor_node(node.value(), visitable, color);
 }
 
 void GridEditor::color_unique(uint32_t x, uint32_t y,

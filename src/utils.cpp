@@ -67,7 +67,7 @@ void EventHandler::on_mousebutton_edit(SDL_Event& event)
   SDL_GetMouseState(&mouse_x, &mouse_y);
 
   if (event.button.button == SDL_BUTTON_LEFT)
-    editor.color_node(mouse_x, mouse_y, OBSTACLE);
+    editor.color_node(mouse_x, mouse_y, false, OBSTACLE);
 }
 
 void EventHandler::on_key(SDL_Event& event)
@@ -116,7 +116,9 @@ void EventHandler::on_key_edit(SDL_Event& event)
 void EventHandler::on_mousemotion_edit(SDL_Event& event)
 {
   if (event.button.button == SDL_BUTTON(SDL_BUTTON_LEFT))
-    editor.color_node(event.motion.x, event.motion.y, OBSTACLE);
+    editor.color_node(event.motion.x, event.motion.y, false, OBSTACLE);
+  else if (event.button.button == SDL_BUTTON(SDL_BUTTON_RIGHT))
+    editor.color_node(event.motion.x, event.motion.y, true, GridBuilder::get_basic_node_color());
 }
 
 void EventHandler::on_mousemotion(SDL_Event& event)

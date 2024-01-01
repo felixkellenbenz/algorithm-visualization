@@ -205,6 +205,6 @@ public:
   
   void clean_color(Color const&);
   void clean_grid();
-  void color_node(uint32_t, uint32_t, Color const&);
+  void color_node(uint32_t, uint32_t, bool ,Color const&);
   void color_unique(uint32_t, uint32_t, Color const&);
 };
