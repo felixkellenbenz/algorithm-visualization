@@ -32,6 +32,15 @@ pressing the **i - key** Once in edit mode you have the following options.
 - **e - key**: create the end node at the location of the cursor.
 - **s - key**: create the start node at the location of the cursor.
 - **r - key**: reset the grid.
+- **c - key**: remove the parts of the grid that were tainted by a algorithm
 
-### Selct algorithms
+### Select an algorithm
+Outside the edit mode you can chose between diffrent algorithms you want 
+to execute on the grid.
+- **1 - key**: Null Algorithm (execute nothing on the grid)
+- **2 - key**: BFS
+- **3 - key**: Dijkstra (not implemented yet)
+- **4 - key**: A* (not implemented yet)
+
+You can begin the execution of an algorithm by pressing the **b - key**.
 
