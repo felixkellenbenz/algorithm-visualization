@@ -7,9 +7,7 @@
 #include <SDL2/SDL_video.h>
 #include <iostream>
 #include <SDL2/SDL.h>
-#include <type_traits>
 
-#include "grid.hpp"
 #include "utils.hpp"
 #include "algorithms.hpp"
 
@@ -33,7 +31,6 @@ int main ()
   SDL_Renderer *renderer;
   SDL_Event event;
   BFS null_strategy;
-  PathFindingStrategy* placeholder = &null_strategy;
 
   if (SDL_Init(SDL_INIT_EVERYTHING))
   {
@@ -45,8 +42,8 @@ int main ()
   SDL_CreateWindowAndRenderer(WIDTH - BORDER, HEIGTH - BORDER, 
                               0, &window, &renderer);
   GridRenderer grid_renderer(renderer); 
-  EventHandler event_handler(editor, running, executed, placeholder); 
-  PathFinder finder(placeholder);
+  EventHandler event_handler(editor, running, executed); 
+  PathFinder finder;
 
   if (!window || !renderer)
   {
@@ -58,10 +55,11 @@ int main ()
     event_handler.handle_events(event); 
 
     grid_renderer.render(grid);
+
+    finder.set_strategy(event_handler.get_pathfinding_strategy());
     
     if (finder.validate(grid) && executed)
     {
-      finder.set_strategy(event_handler.get_pathfinding_strategy());
       finder.find_path(grid, grid_renderer);
       executed = false;
     } 

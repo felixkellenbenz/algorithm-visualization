@@ -1,14 +1,10 @@
 #include <SDL2/SDL_pixels.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL.h>
-#include <cstdint>
-#include <functional>
-#include <memory>
 #include <optional>
 
 #include "grid.hpp"
 
-Color const GridEditor::BASIC_NODE_COLOR = {229, 229, 229};
 Color const GridRenderer::BACKGROUND = {36, 36, 36};
 Color const GridBuilder::BASIC_NODE_COLOR = {229, 229, 229};
 
@@ -33,7 +29,7 @@ Node& Node::operator=(Node node)
   rect.y = node.rect.y;
   parent = node.parent;
   distance = node.distance;
-  return *this;
+  return *(this);
 }
 
 bool Node::operator==(Node const& node) const
@@ -102,14 +98,14 @@ void Grid::recolor_node(Node const& to_recolor, bool free, Color const& color)
   {
     iter->second.set_color(color);
     iter->second.set_free(free);
-  } else 
-    return;
+  }
 }
 
 void Grid::link_nodes(Node const& parent, Node const& child)
 {
   auto iter_child = nodes.find(child.coordinates());
-  auto iter_parent = nodes.find(parent.coordinates()); 
+  auto iter_parent = nodes.find(parent.coordinates());
+
   if (iter_child != nodes.end() && iter_parent != nodes.end())
     iter_child->second.set_parent(&iter_parent->second);
 }
@@ -124,7 +120,6 @@ void Grid::add_node(Node node)
   } else {
     found->second = node;
   }
-
 }
 
 void Grid::reset()
@@ -156,8 +151,7 @@ uint32_t Grid::get_node_size() const
 }
 
 Grid GridBuilder::build_grid()
-{
-  
+{ 
   Grid grid(grid_width, grid_height, node_size);
 
   uint32_t next_x = 0, next_y = 0;
@@ -182,6 +176,11 @@ Grid GridBuilder::build_grid()
   }
 
   return grid;
+}
+
+Color const& GridBuilder::get_basic_node_color()
+{
+  return BASIC_NODE_COLOR;
 }
 
 void GridRenderer::render_node(Node const& node)
@@ -228,8 +227,9 @@ void GridEditor::clean_grid()
 
   for (auto& it : nodes)
   {
-    grid.recolor_node(it.second, true, BASIC_NODE_COLOR);
+    grid.recolor_node(it.second, true, GridBuilder::get_basic_node_color());
   }
+
   grid.reset();
 }
 
@@ -238,7 +238,6 @@ void GridEditor::color_node(uint32_t x, uint32_t y,
 {
   auto cord = parse_coordinate(x, y);
   auto node = grid.find_node(cord.x, cord.y);
-  std::optional<Node> to_recolor = {};
 
   if (!(node.has_value() && node.value().is_free())) return;
 
@@ -248,17 +247,13 @@ void GridEditor::color_node(uint32_t x, uint32_t y,
 void GridEditor::color_unique(uint32_t x, uint32_t y,
                               Color const& color)
 {
-  auto& nodes = grid.get_nodes();
   auto cord = parse_coordinate(x, y);
   auto node = grid.find_node(cord.x, cord.y); 
 
   if (!node.has_value()) return;
 
-  for (auto const& current_node : nodes)
-    if (current_node.second.get_color() == color)
-      grid.recolor_node(current_node.second, 
-                        true, BASIC_NODE_COLOR);
-  
+  clean_color(color);  
+
   grid.recolor_node(node.value(), false, color);
 }
 
@@ -269,7 +264,6 @@ void GridEditor::clean_color(Color const& color)
   for (auto& node : nodes)
   {
     if (node.second.get_color() == color)
-      grid.recolor_node(node.second, true, BASIC_NODE_COLOR);
-
+      grid.recolor_node(node.second, true, GridBuilder::get_basic_node_color());
   }
 }

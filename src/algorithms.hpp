@@ -21,10 +21,14 @@ public:
 class BFS : public PathFindingStrategy
 {
 private :
-  std::array<std::array<int, 2>, 4> const offsets =  {{{-20, 0}, {20, 0}, {0, -20}, {0, 20}}};
+  std::array<std::array<int, 2>, 4> offsets;
   std::queue<Node> explore_queue;
   std::optional<Node> start;
   std::optional<Node> end;
+
+  bool explore_neigbour(std::optional<Node> neigbour, Node& parent, 
+                        Grid& grid, Color const& color);
+  void build_offsets(Grid&);
 
 public:
   
@@ -46,28 +50,28 @@ public:
 class PathFinder
 {
 private:
+  static Color const EXPLORE_COLOR;
+  static Color const PATH_COLOR;
+
   std::optional<Node> start;
   std::optional<Node> end;
   PathFindingStrategy* strategy;
   std::vector<Node> path;
-
   
-
-public:
-  static Color const EXPLORE_COLOR;
-  static Color const PATH_COLOR;
-
-  PathFinder(PathFindingStrategy* _strategy)
-    : strategy(_strategy) {}
-
-  void color_path(Grid& grid);
-
-  bool validate(Grid&);
-
-  bool find_path(Grid&, GridRenderer&); 
-
+  void initialize(Grid&);
+  bool check_backtracking_conditions(std::optional<Node>);
   bool backtrack(Grid& grid);
 
+public:
+  PathFinder()
+  : strategy(0) {}
+
+  void color_path(Grid& grid);
+  bool validate(Grid&);
+  bool find_path(Grid&, GridRenderer&); 
+  
   void set_strategy(PathFindingStrategy*);
 
+  static Color const& explore_color();
+  static Color const& path_color();
 };

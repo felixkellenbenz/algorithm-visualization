@@ -80,15 +80,16 @@ void EventHandler::on_key(SDL_Event& event)
    executed = true;
   else if (event.key.keysym.sym == 99)
   {
-    editor.clean_color(PathFinder::EXPLORE_COLOR);
-    editor.clean_color(PathFinder::PATH_COLOR); 
+    editor.clean_color(PathFinder::explore_color());
+    editor.clean_color(PathFinder::path_color()); 
   }
   else if (event.key.keysym.sym == 49) 
   {
+    static NullStrategy null_strat;
     strategy = &null_strat;
   } else if (event.key.keysym.sym == 50) 
   {
-    BFS finding_strat;
+    static BFS bfs;
     strategy = &bfs;
   }
 }
@@ -107,8 +108,8 @@ void EventHandler::on_key_edit(SDL_Event& event)
     editor.clean_grid();
   else if (event.key.keysym.sym == 99)
   {
-    editor.clean_color(PathFinder::EXPLORE_COLOR);
-    editor.clean_color(PathFinder::PATH_COLOR); 
+    editor.clean_color(PathFinder::explore_color());
+    editor.clean_color(PathFinder::path_color()); 
   }
 }
 
@@ -128,4 +129,19 @@ void EventHandler::on_mousemotion(SDL_Event& event)
 PathFindingStrategy* EventHandler::get_pathfinding_strategy()
 {
   return strategy;
+}
+
+Color const& EventHandler::obstacle_color()
+{
+  return OBSTACLE;
+}
+
+Color const& EventHandler::end_color()
+{
+  return END_COLOR;
+}
+
+Color const& EventHandler::start_color()
+{
+  return START_COLOR;
 }
