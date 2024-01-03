@@ -77,7 +77,9 @@ void EventHandler::on_key(SDL_Event& event)
   else if (event.key.keysym.sym == 114)
     editor.clean_grid();
   else if (event.key.keysym.sym == 98)
-   executed = true;
+  {
+    executed = strategy && strategy->valid();
+  }
   else if (event.key.keysym.sym == 99)
   {
     editor.clean_color(PathFinder::explore_color());

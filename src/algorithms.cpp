@@ -95,6 +95,11 @@ void BFS::reset()
   }
 }
 
+bool BFS::valid()
+{
+  return true;
+}
+
 void NullStrategy::set_start(Node start) 
 {
   start.get_parent();
@@ -114,6 +119,11 @@ bool NullStrategy::explore(Grid& grid, Color const& color)
 void NullStrategy::reset()
 {
 
+}
+
+bool NullStrategy::valid()
+{
+  return false;
 }
 
 bool PathFinder::validate(Grid& grid)

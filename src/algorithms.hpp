@@ -16,6 +16,7 @@ public:
   virtual bool explore(Grid&, Color const&) = 0;
   virtual void set_start(Node) = 0;
   virtual void set_end(Node) = 0;
+  virtual bool valid() = 0;
 };
 
 class BFS : public PathFindingStrategy
@@ -36,6 +37,24 @@ public:
   bool explore(Grid&, Color const&) override;
   void set_start(Node) override;
   void set_end(Node) override;
+  bool valid() override;
+};
+
+class Dijskstra : public PathFindingStrategy
+{
+private :
+  std::array<std::array<int, 2>, 4> offsets;
+  std::priority_queue<Node> explore_queue;
+  std::optional<Node> start;
+  std::optional<Node> end;
+
+public:
+  
+  void reset() override;
+  bool explore(Grid&, Color const&) override;
+  void set_start(Node) override;
+  void set_end(Node) override;
+  bool valid() override;
 };
 
 class NullStrategy : public PathFindingStrategy
@@ -45,6 +64,7 @@ public:
   bool explore(Grid&, Color const&) override;
   void set_start(Node) override;
   void set_end(Node) override;
+  bool valid() override;
 };
 
 class PathFinder
