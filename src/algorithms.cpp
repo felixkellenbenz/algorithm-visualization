@@ -14,15 +14,19 @@
 Color const PathFinder::EXPLORE_COLOR = {0, 206, 209};
 Color const PathFinder::PATH_COLOR = {255, 195, 11};
 
-void BFS::set_start(Node node)
-{
-  explore_queue.push(node);
-  start = node;
-}
-
-void BFS::set_end(Node node)
+void PathFindingStrategy::set_end(Node& node)
 {
   end = node;
+}
+
+void PathFindingStrategy::build_offsets(Grid& grid)
+{
+  int node_size = grid.get_node_size();
+  int neg_node_size = -1 * node_size;
+  offsets[0] = {neg_node_size, 0};
+  offsets[1] = {node_size, 0};
+  offsets[2] = {0, neg_node_size};
+  offsets[3] = {0, node_size};
 }
 
 bool BFS::explore_neigbour(std::optional<Node> neigbour, Node& parent, 
@@ -46,16 +50,6 @@ bool BFS::explore_neigbour(std::optional<Node> neigbour, Node& parent,
   grid.recolor_node(neigbour.value(), false, color); 
 
   return false;
-}
-
-void BFS::build_offsets(Grid& grid)
-{
-  int node_size = grid.get_node_size();
-  int neg_node_size = -1 * node_size;
-  offsets[0] = {neg_node_size, 0};
-  offsets[1] = {node_size, 0};
-  offsets[2] = {0, neg_node_size};
-  offsets[3] = {0, node_size};
 }
 
 bool BFS::explore(Grid& grid, Color const& color)
@@ -93,21 +87,17 @@ void BFS::reset()
   {
     explore_queue.pop();
   }
-}
+  }
 
 bool BFS::valid()
 {
   return true;
 }
 
-void NullStrategy::set_start(Node start) 
+void BFS::set_start(Node& _start)
 {
-  start.get_parent();
-}
-
-void NullStrategy::set_end(Node end) 
-{
-  end.get_parent();
+  explore_queue.push(_start);
+  start = _start;
 }
 
 bool NullStrategy::explore(Grid& grid, Color const& color) 
@@ -124,6 +114,11 @@ void NullStrategy::reset()
 bool NullStrategy::valid()
 {
   return false;
+}
+
+void NullStrategy::set_start(Node& _start)
+{
+  start = _start;
 }
 
 bool PathFinder::validate(Grid& grid)
