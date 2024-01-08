@@ -1,8 +1,10 @@
 #pragma once
 #include <cstdint>
+#include <iterator>
 #include <optional>
 #include <queue>
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 #include <array>
 
@@ -12,11 +14,14 @@
 class PathFindingStrategy
 {
 protected:
-    std::array<std::array<int, 2>, 4> offsets;
-    std::optional<Node> start;
-    std::optional<Node> end;
+  std::array<std::array<int, 2>, 4> offsets;
+  std::optional<Node> start;
+  std::optional<Node> end;
 
 public:
+
+  virtual ~PathFindingStrategy();
+
   virtual void reset() = 0;
   virtual bool explore(Grid&, Color const&) = 0; 
   virtual bool valid() = 0;
@@ -43,7 +48,8 @@ public:
 class Dijskstra : public PathFindingStrategy
 {
 private:
-  std::priority_queue<Node> explore_queue;
+  std::queue<Node> explore_queue;
+  std::unordered_map<Coordinate, uint32_t> distances;
 
 public:
   
@@ -70,7 +76,7 @@ private:
 
   std::optional<Node> start;
   std::optional<Node> end;
-  PathFindingStrategy* strategy;
+  PathFindingStrategy* strategy; 
   std::vector<Node> path;
   
   void initialize(Grid&);

@@ -74,21 +74,18 @@ private:
   Color color;
   std::optional<Node*> parent;
   bool free;
-  uint64_t distance;
 
 public:
   Node(SDL_Rect const& _rect, Color const& _color)
   : rect(_rect), 
     color(_color),
-    free(true), 
-    distance(UINT64_MAX) {} 
+    free(true) {} 
 
   Node(Node const& node) 
   : rect(node.rect),
     color(node.color),
     parent(node.parent),
-    free(node.free),
-    distance(node.distance) {}
+    free(node.free) {}
 
   ~Node();
 
@@ -142,10 +139,6 @@ public:
   uint32_t get_heigth() const;
   uint32_t get_width() const;
   uint32_t get_node_size() const;
-  std::optional<Node> get_start() const;
-  std::optional<Node> get_end() const;
-  void set_start(std::optional<Node>); 
-  void set_end(std::optional<Node>);
 };
 
 /*Build a new Grid with only free rects*/

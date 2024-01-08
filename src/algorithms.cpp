@@ -87,7 +87,7 @@ void BFS::reset()
   {
     explore_queue.pop();
   }
-  }
+}
 
 bool BFS::valid()
 {
@@ -98,6 +98,29 @@ void BFS::set_start(Node& _start)
 {
   explore_queue.push(_start);
   start = _start;
+}
+
+bool Dijskstra::explore(Grid& grid, Color const& color)
+{
+  
+}
+
+bool Dijskstra::valid()
+{
+  return true;
+}
+
+void Dijskstra::reset()
+{
+
+
+}
+
+
+void Dijskstra::set_start(Node& _start)
+{
+  _start.coordinates();
+
 }
 
 bool NullStrategy::explore(Grid& grid, Color const& color) 
